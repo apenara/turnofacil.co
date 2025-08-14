@@ -1,0 +1,126 @@
+[
+  {
+    "roleName": "Super Administrador",
+    "roleKey": "SUPER_ADMIN",
+    "description": "Gestiona la plataforma TurnoFacil CO a nivel global. Responsable de la administración de las empresas clientes.",
+    "scope": "Platform",
+    "permissions": [
+      {
+        "permissionKey": "MANAGE_CLIENT_COMPANIES",
+        "description": "Puede crear, aprobar, suspender, reactivar y eliminar cuentas de empresas clientes."
+      },
+      {
+        "permissionKey": "VIEW_PLATFORM_ANALYTICS",
+        "description": "Tiene acceso a los datos agregados y al monitoreo de toda la plataforma (número de usuarios, empresas activas, etc.)."
+      },
+      {
+        "permissionKey": "MANAGE_SUBSCRIPTION_PLANS",
+        "description": "Puede definir y modificar los planes de suscripción que se ofrecen a los clientes."
+      },
+      {
+        "permissionKey": "SEND_GLOBAL_NOTIFICATIONS",
+        "description": "Puede enviar comunicados a todos los administradores de las empresas clientes."
+      }
+    ]
+  },
+  {
+    "roleName": "Administrador del Negocio",
+    "roleKey": "BUSINESS_ADMIN",
+    "description": "Rol principal dentro de una empresa cliente. Configura la cuenta, gestiona usuarios y tiene la aprobación final sobre los horarios.",
+    "scope": "Company",
+    "permissions": [
+      {
+        "permissionKey": "MANAGE_COMPANY_PROFILE",
+        "description": "Puede editar la información de la empresa (NIT, razón social, sedes, etc.)."
+      },
+      {
+        "permissionKey": "MANAGE_USERS",
+        "description": "Puede crear, editar y eliminar las cuentas de usuarios (Supervisores y Colaboradores) dentro de su empresa."
+      },
+      {
+        "permissionKey": "DEFINE_COMPANY_SETTINGS",
+        "description": "Define los tipos de contrato, tipos de trabajador (Cocinero, Mesero), y parámetros generales de la empresa."
+      },
+      {
+        "permissionKey": "MANAGE_SHIFT_TEMPLATES",
+        "description": "Puede crear y guardar plantillas de horarios para reutilizar."
+      },
+      {
+        "permissionKey": "FINALIZE_SCHEDULES",
+        "description": "Tiene la autoridad para aprobar, rechazar o solicitar modificaciones en los horarios propuestos por los supervisores."
+      },
+      {
+        "permissionKey": "VIEW_ALL_REPORTS",
+        "description": "Puede generar y visualizar todos los reportes de costos, horas trabajadas y eficiencia de toda la empresa."
+      },
+      {
+        "permissionKey": "MANAGE_BILLING",
+        "description": "Puede visualizar las facturas de su suscripción a TurnoFacil CO y gestionar los métodos de pago."
+      },
+      {
+        "permissionKey": "CONFIGURE_PERMISSIONS",
+        "description": "Puede configurar si los colaboradores pueden ver los horarios de sus compañeros."
+      }
+    ]
+  },
+  {
+    "roleName": "Supervisor",
+    "roleKey": "SUPERVISOR",
+    "description": "Jefe de área o equipo. Responsable de la creación y gestión diaria de los horarios de su equipo. Es un rol opcional.",
+    "scope": "Team",
+    "permissions": [
+      {
+        "permissionKey": "CREATE_AND_MANAGE_TEAM_SCHEDULES",
+        "description": "Puede crear, asignar, modificar y eliminar los turnos para los colaboradores de su equipo o área asignada."
+      },
+      {
+        "permissionKey": "SUBMIT_SCHEDULES_FOR_APPROVAL",
+        "description": "Envía los horarios creados al Administrador del Negocio para su aprobación final."
+      },
+      {
+        "permissionKey": "MANAGE_TEAM_REQUESTS",
+        "description": "Es el primer nivel de aprobación para las solicitudes de cambio de turno o reportes de ausencia de su equipo."
+      },
+      {
+        "permissionKey": "VIEW_TEAM_REPORTS",
+        "description": "Puede ver reportes limitados al desempeño y horas trabajadas de su equipo."
+      },
+      {
+        "permissionKey": "VIEW_ASSIGNED_EMPLOYEES",
+        "description": "Puede ver la lista y el perfil de los colaboradores que tiene a su cargo."
+      }
+    ]
+  },
+  {
+    "roleName": "Colaborador",
+    "roleKey": "EMPLOYEE",
+    "description": "Usuario base de la plataforma. Consulta sus horarios y gestiona sus solicitudes personales.",
+    "scope": "User",
+    "permissions": [
+      {
+        "permissionKey": "VIEW_OWN_SCHEDULE",
+        "description": "Puede ver su calendario de turnos personal, incluyendo detalles de horas y fechas."
+      },
+      {
+        "permissionKey": "VIEW_TEAM_SCHEDULE",
+        "description": "Puede ver los horarios de sus compañeros de equipo, si el Administrador ha habilitado esta opción."
+      },
+      {
+        "permissionKey": "REQUEST_SHIFT_CHANGE",
+        "description": "Puede iniciar una solicitud para cambiar un turno asignado."
+      },
+      {
+        "permissionKey": "REPORT_ABSENCE",
+        "description": "Puede reportar una ausencia por motivo de enfermedad o calamidad."
+      },
+      {
+        "permissionKey": "UPLOAD_SUPPORT_DOCUMENT",
+        "description": "Puede adjuntar un documento (ej. excusa médica) para sustentar una ausencia o solicitud."
+      },
+      {
+        "permissionKey": "MANAGE_OWN_PROFILE",
+        "description": "Puede editar su información de contacto personal."
+      }
+    ]
+  }
+]

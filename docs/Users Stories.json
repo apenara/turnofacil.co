@@ -1,0 +1,188 @@
+[
+  {
+    "roleName": "Super Administrador",
+    "roleKey": "SUPER_ADMIN",
+    "userStories": [
+      {
+        "storyId": "SA-01",
+        "asA": "Como un Super Administrador",
+        "iWantTo": "aprobar el registro de una nueva empresa en la plataforma",
+        "soThat": "pueda convertirse en un cliente activo y empezar a usar el servicio.",
+        "acceptanceCriteria": [
+          "Debo ver una lista de empresas pendientes de aprobación.",
+          "Cada solicitud debe mostrar la información básica de la empresa (NIT, Razón Social, contacto).",
+          "Debo tener botones para 'Aprobar' o 'Rechazar' la solicitud.",
+          "Al aprobar, la empresa cambia su estado a 'Activa' y se le asigna un plan de suscripción inicial.",
+          "Al rechazar, la empresa es notificada y su cuenta no se activa."
+        ]
+      },
+      {
+        "storyId": "SA-02",
+        "asA": "Como un Super Administrador",
+        "iWantTo": "visualizar un dashboard con las métricas clave de la plataforma",
+        "soThat": "pueda monitorear la salud y el crecimiento del negocio.",
+        "acceptanceCriteria": [
+          "El dashboard debe mostrar el número total de empresas activas.",
+          "El dashboard debe mostrar el número total de usuarios (colaboradores) en la plataforma.",
+          "El dashboard debe mostrar ingresos recurrentes mensuales (MRR).",
+          "Los datos deben poder filtrarse por rangos de fechas."
+        ]
+      },
+      {
+        "storyId": "SA-03",
+        "asA": "Como un Super Administrador",
+        "iWantTo": "suspender o reactivar la cuenta de una empresa cliente",
+        "soThat": "pueda gestionar el acceso basado en el estado de sus pagos o por incumplimiento de términos.",
+        "acceptanceCriteria": [
+          "Debo poder buscar una empresa por su nombre o NIT.",
+          "En el perfil de la empresa, debe existir un botón para 'Suspender' o 'Reactivar'.",
+          "Una cuenta suspendida no permite el acceso a ninguno de sus usuarios.",
+          "Una cuenta reactivada restaura el acceso inmediatamente."
+        ]
+      }
+    ]
+  },
+  {
+    "roleName": "Administrador del Negocio",
+    "roleKey": "BUSINESS_ADMIN",
+    "userStories": [
+      {
+        "storyId": "BA-01",
+        "asA": "Como un Administrador del Negocio",
+        "iWantTo": "configurar el perfil y los parámetros de mi empresa",
+        "soThat": "los cálculos de horarios y reportes sean precisos y reflejen mi operación.",
+        "acceptanceCriteria": [
+          "Debo poder ingresar y editar el NIT, razón social y sedes de mi empresa.",
+          "Debo poder crear 'Tipos de Trabajador' (ej: Cocinero, Recepcionista).",
+          "Debo poder definir los 'Tipos de Contrato' con sus salarios base.",
+          "Debo poder configurar si los colaboradores pueden ver los horarios de sus compañeros."
+        ]
+      },
+      {
+        "storyId": "BA-02",
+        "asA": "Como un Administrador del Negocio",
+        "iWantTo": "crear, editar y desactivar usuarios (Supervisores y Colaboradores)",
+        "soThat": "pueda mantener actualizada la lista de personal activo en la plataforma.",
+        "acceptanceCriteria": [
+          "Debo poder acceder a una sección de 'Gestión de Usuarios'.",
+          "Al crear un usuario, debo poder asignarle un nombre, email, 'Tipo de Trabajador' y rol ('Supervisor' o 'Colaborador').",
+          "Debo poder editar la información de un usuario existente.",
+          "Al desactivar un usuario, este ya no debe aparecer en el planificador de horarios."
+        ]
+      },
+      {
+        "storyId": "BA-03",
+        "asA": "Como un Administrador del Negocio",
+        "iWantTo": "revisar y aprobar los horarios propuestos por un supervisor",
+        "soThat": "pueda asegurar que la planificación cumple con los costos y las normativas antes de ser publicada.",
+        "acceptanceCriteria": [
+          "Debo recibir una notificación cuando un horario esté pendiente de aprobación.",
+          "Debo poder ver el horario propuesto con un resumen de costos y horas extras proyectadas.",
+          "Debo tener botones para 'Aprobar', 'Rechazar' o 'Solicitar Modificación' con un comentario.",
+          "Al aprobar, el horario se publica y se notifica a los colaboradores."
+        ]
+      },
+      {
+        "storyId": "BA-04",
+        "asA": "Como un Administrador del Negocio",
+        "iWantTo": "ver los reportes de toda la empresa",
+        "soThat": "pueda analizar costos, eficiencia y horas trabajadas para la toma de decisiones.",
+        "acceptanceCriteria": [
+          "Debo poder generar un reporte de horas trabajadas (ordinarias, extras, recargos) por empleado o por área.",
+          "Debo poder generar un reporte de costos de nómina basado en los horarios.",
+          "Los reportes deben poder exportarse a PDF y Excel."
+        ]
+      }
+    ]
+  },
+  {
+    "roleName": "Supervisor",
+    "roleKey": "SUPERVISOR",
+    "userStories": [
+      {
+        "storyId": "SP-01",
+        "asA": "Como un Supervisor",
+        "iWantTo": "crear un horario semanal para mi equipo usando una interfaz de calendario",
+        "soThat": "pueda asignar turnos de forma rápida y visual.",
+        "acceptanceCriteria": [
+          "Debo ver un calendario con los días de la semana y los colaboradores de mi equipo.",
+          "Debo poder arrastrar y soltar turnos predefinidos o crear turnos nuevos haciendo clic en una celda.",
+          "El sistema debe mostrarme el conteo de horas asignadas por colaborador a medida que planifico.",
+          "El sistema debe alertarme visualmente si excedo las horas permitidas para un colaborador."
+        ]
+      },
+      {
+        "storyId": "SP-02",
+        "asA": "Como un Supervisor",
+        "iWantTo": "someter el horario que he creado a la aprobación del Administrador",
+        "soThat": "pueda formalizar la planificación.",
+        "acceptanceCriteria": [
+          "Una vez finalizado el horario, debo tener un botón de 'Enviar para Aprobación'.",
+          "Al enviarlo, el estado del horario cambia a 'Pendiente de Aprobación' y ya no puedo editarlo.",
+          "Recibo una notificación cuando el Administrador aprueba o rechaza el horario."
+        ]
+      },
+      {
+        "storyId": "SP-03",
+        "asA": "Como un Supervisor",
+        "iWantTo": "gestionar las solicitudes de cambio o las ausencias reportadas por mi equipo",
+        "soThat": "pueda mantener el horario actualizado y la operación cubierta.",
+        "acceptanceCriteria": [
+          "Debo recibir notificaciones de nuevas solicitudes.",
+          "Debo poder ver los detalles de la solicitud (ej. motivo, documento adjunto).",
+          "Debo tener botones para 'Aprobar' o 'Rechazar' la solicitud.",
+          "Si apruebo un cambio, el calendario se actualiza automáticamente."
+        ]
+      }
+    ]
+  },
+  {
+    "roleName": "Colaborador",
+    "roleKey": "EMPLOYEE",
+    "userStories": [
+      {
+        "storyId": "EM-01",
+        "asA": "Como un Colaborador",
+        "iWantTo": "ver mi horario de trabajo de forma clara en un calendario",
+        "soThat": "sepa exactamente cuándo debo trabajar.",
+        "acceptanceCriteria": [
+          "Al iniciar sesión, debo ver mi calendario personal con mis turnos asignados.",
+          "Debo poder cambiar entre vista semanal y mensual.",
+          "Cada turno debe mostrar claramente la fecha, hora de inicio y hora de fin."
+        ]
+      },
+      {
+        "storyId": "EM-02",
+        "asA": "Como un Colaborador",
+        "iWantTo": "recibir notificaciones cuando mi horario sea publicado o modificado",
+        "soThat": "esté siempre informado de cualquier cambio.",
+        "acceptanceCriteria": [
+          "Debo recibir una notificación push en mi móvil o un email cuando se publique un nuevo horario.",
+          "Debo recibir una notificación si un turno específico es cambiado o cancelado."
+        ]
+      },
+      {
+        "storyId": "EM-03",
+        "asA": "Como un Colaborador",
+        "iWantTo": "solicitar un cambio en uno de mis turnos asignados",
+        "soThat": "pueda gestionar mis compromisos personales como citas médicas.",
+        "acceptanceCriteria": [
+          "Debo poder seleccionar un turno de mi calendario y elegir la opción 'Solicitar Cambio'.",
+          "Se debe abrir un formulario donde pueda explicar el motivo de mi solicitud.",
+          "Debo poder ver el estado de mi solicitud ('Pendiente', 'Aprobada', 'Rechazada')."
+        ]
+      },
+      {
+        "storyId": "EM-04",
+        "asA": "Como un Colaborador",
+        "iWantTo": "reportar una ausencia por enfermedad y adjuntar un justificante médico",
+        "soThat": "pueda informar a mi supervisor de manera formal y documentada.",
+        "acceptanceCriteria": [
+          "Debo tener una opción para 'Reportar Ausencia'.",
+          "Debo poder seleccionar la fecha de la ausencia y adjuntar un archivo (PDF, JPG).",
+          "Mi supervisor debe ser notificado inmediatamente después de que envíe el reporte."
+        ]
+      }
+    ]
+  }
+]

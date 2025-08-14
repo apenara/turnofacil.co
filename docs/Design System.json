@@ -1,0 +1,201 @@
+{
+  "designSystemName": "TurnoFacil CO Design System",
+  "version": "1.0.0",
+  "description": "Sistema de diseño modular y reutilizable para construir la interfaz de TurnoFacil CO, garantizando consistencia visual, una experiencia de usuario cohesiva y un desarrollo ágil.",
+  "foundations": {
+    "colors": {
+      "paletteName": "Andino",
+      "primary": {
+        "main": "#0D9488",
+        "light": "#5EEAD4",
+        "dark": "#047857",
+        "contrastText": "#FFFFFF"
+      },
+      "secondary": {
+        "main": "#F59E0B",
+        "light": "#FCD34D",
+        "dark": "#B45309",
+        "contrastText": "#FFFFFF"
+      },
+      "neutral": {
+        "black": "#111827",
+        "dark_gray": "#4B5563",
+        "medium_gray": "#9CA3AF",
+        "light_gray": "#E5E7EB",
+        "off_white": "#F9FAFB",
+        "white": "#FFFFFF"
+      },
+      "semantic": {
+        "success": "#10B981",
+        "warning": "#FBBF24",
+        "error": "#EF4444",
+        "info": "#3B82F6"
+      }
+    },
+    "typography": {
+      "fontFamily": "'Inter', sans-serif",
+      "scale": [
+        {
+          "name": "Heading 1 (h1)",
+          "fontSize": "2.25rem",
+          "fontWeight": 700
+        },
+        {
+          "name": "Heading 2 (h2)",
+          "fontSize": "1.875rem",
+          "fontWeight": 700
+        },
+        {
+          "name": "Heading 3 (h3)",
+          "fontSize": "1.5rem",
+          "fontWeight": 600
+        },
+        {
+          "name": "Body Large",
+          "fontSize": "1.125rem",
+          "fontWeight": 400
+        },
+        {
+          "name": "Body Default (p)",
+          "fontSize": "1rem",
+          "fontWeight": 400
+        },
+        {
+          "name": "Caption",
+          "fontSize": "0.875rem",
+          "fontWeight": 400
+        },
+        {
+          "name": "Button Text",
+          "fontSize": "1rem",
+          "fontWeight": 500
+        }
+      ]
+    },
+    "spacing": {
+      "description": "Basado en una unidad de 4px. Usar para márgenes, paddings y gaps.",
+      "scale": {
+        "xs": "0.25rem",
+        "sm": "0.5rem",
+        "md": "1rem",
+        "lg": "1.5rem",
+        "xl": "2rem",
+        "xxl": "3rem"
+      }
+    },
+    "borderRadius": {
+      "sm": "4px",
+      "md": "8px",
+      "lg": "16px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+    }
+  },
+  "components": [
+    {
+      "componentName": "Button",
+      "description": "Componente interactivo principal para acciones del usuario.",
+      "variants": [
+        {
+          "name": "Primary",
+          "style": "Fondo `colors.primary.main` con texto `colors.primary.contrastText`."
+        },
+        {
+          "name": "Secondary",
+          "style": "Borde `colors.primary.main` con texto `colors.primary.main` y fondo transparente."
+        },
+        {
+          "name": "Danger",
+          "style": "Fondo `colors.semantic.error` con texto `colors.neutral.white`."
+        },
+        {
+          "name": "Text",
+          "style": "Solo texto con color `colors.primary.main`, sin borde ni fondo."
+        }
+      ],
+      "states": {
+        "hover": "Aumenta la sombra y/o aclara ligeramente el color de fondo.",
+        "disabled": "Opacidad al 50% y cursor 'not-allowed'."
+      }
+    },
+    {
+      "componentName": "Input Field",
+      "description": "Campo de formulario para la entrada de texto por parte del usuario.",
+      "structure": {
+        "Label": "Texto `typography.scale.Caption` con color `colors.neutral.dark_gray`.",
+        "Input": "Borde `colors.neutral.light_gray`, fondo `colors.neutral.white`, texto `colors.neutral.black`. Padding `spacing.sm`. Border-radius `borderRadius.md`."
+      },
+      "states": {
+        "focus": "Borde cambia a `colors.primary.main` y muestra un `shadows.sm`.",
+        "error": "Borde cambia a `colors.semantic.error`.",
+        "disabled": "Fondo `colors.neutral.off_white` y texto `colors.neutral.medium_gray`."
+      }
+    },
+    {
+      "componentName": "Card",
+      "description": "Contenedor principal para agrupar información relacionada.",
+      "style": "Fondo `colors.neutral.white`, padding `spacing.lg`, border-radius `borderRadius.lg`, sombra `shadows.md`."
+    },
+    {
+      "componentName": "Modal",
+      "description": "Ventana emergente que requiere la atención del usuario.",
+      "structure": {
+        "Overlay": "Fondo negro semitransparente que cubre toda la pantalla.",
+        "Container": "Componente `Card` con sombra `shadows.xl`, centrado en la pantalla.",
+        "Header": "Título `typography.scale.h3` con un botón de cierre (ícono 'X').",
+        "Footer": "Contiene los botones de acción (`Button`)."
+      }
+    },
+    {
+      "componentName": "Tag / Badge",
+      "description": "Etiquetas para mostrar estados o categorías de forma visual.",
+      "style": "Padding `spacing.xs` horizontal y `spacing.sm` vertical, border-radius `borderRadius.full`, tipografía `typography.scale.Caption` con `fontWeight: 500`.",
+      "variants": [
+        { "name": "Success", "style": "Fondo `colors.semantic.success` con texto `colors.neutral.white`." },
+        { "name": "Warning", "style": "Fondo `colors.semantic.warning` con texto `colors.neutral.black`." },
+        { "name": "Error", "style": "Fondo `colors.semantic.error` con texto `colors.neutral.white`." },
+        { "name": "Info", "style": "Fondo `colors.semantic.info` con texto `colors.neutral.white`." },
+        { "name": "Default", "style": "Fondo `colors.neutral.light_gray` con texto `colors.neutral.dark_gray`." }
+      ]
+    },
+    {
+      "componentName": "Calendar",
+      "description": "Componente complejo para visualizar y gestionar horarios.",
+      "structure": {
+        "Header": "Muestra el mes/semana actual con botones (`Button` variante `Secondary`) para navegar.",
+        "DayCell": "Celda de la cuadrícula con un fondo `colors.neutral.off_white` y borde `colors.neutral.light_gray`.",
+        "ShiftCard": "Una pequeña `Card` que representa un turno, con fondo `colors.primary.light` y texto `colors.primary.dark`. Es arrastrable."
+      }
+    }
+  ],
+  "guidelines": {
+    "accessibility": {
+      "title": "Principios de Accesibilidad (A11y)",
+      "rules": [
+        "Asegurar un contraste de color mínimo de 4.5:1 para texto normal.",
+        "Todos los elementos interactivos deben ser accesibles y operables mediante teclado.",
+        "Usar HTML semántico (ej. `<nav>`, `<main>`, `<button>`) siempre que sea posible.",
+        "Proveer texto alternativo para todas las imágenes y etiquetas ARIA para componentes complejos."
+      ]
+    },
+    "iconography": {
+      "library": "Heroicons (https://heroicons.com)",
+      "usage": "Usar la variante 'Outline' por defecto. El tamaño base debe ser de 24px. Los íconos deben heredar el color del texto (`currentColor`) para mayor flexibilidad."
+    },
+    "voiceAndTone": {
+      "voice": "Claro, Profesional y Empoderador.",
+      "tone": "El tono se adapta al contexto. Es tranquilizador al confirmar una acción exitosa y directo pero útil al mostrar un error.",
+      "dos_and_donts": [
+        {
+          "do": "Usa un lenguaje claro y conciso. Ej: 'Horario publicado correctamente'.",
+          "dont": "No uses jerga técnica o un lenguaje vago. Ej: 'Operación finalizada con código 200'."
+        }
+      ]
+    }
+  }
+}

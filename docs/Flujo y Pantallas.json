@@ -1,0 +1,246 @@
+{
+  "applicationFlowsAndScreens": [
+    {
+      "flowName": "Sitio Público y Onboarding de Empresas",
+      "description": "Contiene todas las pantallas y flujos para usuarios no autenticados, desde la captación del cliente potencial hasta su registro.",
+      "screens": [
+        {
+          "screenId": "PUBLIC_LANDING_PAGE",
+          "screenName": "Página de Inicio (Landing Page)",
+          "description": "La página principal de marketing para atraer y convertir a nuevas empresas.",
+          "components": [
+            {
+              "componentName": "Sección Principal (Hero)",
+              "details": "Mensaje de valor claro: 'TurnoFacil CO: Optimiza tus turnos, cumple la ley.' con un llamado a la acción (CTA) principal como 'Empezar ahora'."
+            },
+            {
+              "componentName": "Sección de Beneficios",
+              "details": "Iconos y texto breve destacando: Cálculo automático de horas, Cumplimiento de la ley colombiana, Portal del empleado, Reportes inteligentes."
+            },
+            {
+              "componentName": "Sección de Precios",
+              "details": "Tabla comparativa de los planes de suscripción (Básico, Pro, Corporativo) con sus características y precios."
+            },
+            {
+              "componentName": "Sección de Contacto",
+              "details": "Formulario para solicitar una demostración o resolver dudas, funcionando como un canal de 'Lead Management'."
+            }
+          ]
+        },
+        {
+          "screenId": "AUTH_LOGIN",
+          "screenName": "Página de Login",
+          "description": "Portal de acceso para todos los usuarios existentes de la plataforma (Super Admin, Administrador, Supervisor, Colaborador).",
+          "components": [
+            {
+              "componentName": "Formulario de Acceso",
+              "details": "Campos para email y contraseña."
+            },
+            {
+              "componentName": "Botones de Acción",
+              "details": "Botón para 'Ingresar' y un enlace para '¿Olvidaste tu contraseña?'."
+            }
+          ]
+        },
+        {
+          "screenId": "ONBOARDING_FLOW",
+          "screenName": "Flujo de Onboarding para Empresas Nuevas",
+          "description": "Proceso multi-paso para que un Administrador del Negocio registre su empresa.",
+          "steps": [
+            {
+              "step": 1,
+              "name": "Creación de Cuenta",
+              "details": "Formulario para capturar los datos del administrador y la empresa: Nombre completo, Email de trabajo, Contraseña, Nombre de la Empresa, Tamaño de la empresa (lead generation)."
+            },
+            {
+              "step": 2,
+              "name": "Detalles del Negocio",
+              "details": "Formulario para datos adicionales: NIT, Sector/Industria, Dirección."
+            },
+            {
+              "step": 3,
+              "name": "Selección de Plan",
+              "details": "Selección del plan de suscripción y entrada de información de pago (integración con Stripe)."
+            },
+            {
+              "step": 4,
+              "name": "Revisión Pendiente",
+              "details": "Página de confirmación que informa al usuario que su cuenta ha sido creada y está pendiente de aprobación por el Super Administrador."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "flowName": "Dashboard del Super Administrador",
+      "description": "Interfaz de gestión global de la plataforma, accesible solo para el rol Super Administrador.",
+      "screens": [
+        {
+          "screenId": "SA_DASHBOARD",
+          "screenName": "Dashboard Principal",
+          "description": "Vista general de la salud y estado de la plataforma.",
+          "components": [
+            {
+              "componentName": "Métricas Clave",
+              "details": "Tarjetas con datos: 'Empresas Activas', 'Usuarios Totales', 'Empresas Pendientes de Aprobación'."
+            },
+            {
+              "componentName": "Lista de Aprobación",
+              "details": "Una lista interactiva de las empresas que esperan aprobación, con botones para 'Aprobar' o 'Rechazar'."
+            }
+          ]
+        },
+        {
+          "screenId": "SA_COMPANIES_MANAGEMENT",
+          "screenName": "Gestión de Clientes",
+          "description": "Tabla para ver, buscar y gestionar todas las empresas clientes.",
+          "components": [
+            {
+              "componentName": "Tabla de Empresas",
+              "details": "Columnas: Razón Social, NIT, Plan, Estado (Activo, Suspendido), Fecha de registro. Acciones para 'Suspender', 'Reactivar', 'Ver detalles'."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "flowName": "Dashboard del Administrador / Supervisor",
+      "description": "El centro de operaciones para la gestión de horarios de una empresa. La vista se adapta según el rol.",
+      "screens": [
+        {
+          "screenId": "ADMIN_DASHBOARD",
+          "screenName": "Dashboard de la Empresa",
+          "description": "Página de inicio con un resumen de la actividad actual.",
+          "components": [
+            {
+              "componentName": "Resumen Operativo",
+              "details": "Tarjetas con: 'Colaboradores en turno ahora', 'Solicitudes pendientes', 'Horas extras de la semana'."
+            },
+            {
+              "componentName": "Acceso Rápido",
+              "details": "Botones grandes para las acciones más comunes: 'Crear Horario', 'Gestionar Empleados'."
+            }
+          ],
+          "roleLimitations": {
+            "SUPERVISOR": "Las métricas mostradas están filtradas para mostrar solo la información de su equipo asignado."
+          }
+        },
+        {
+          "screenId": "ADMIN_SCHEDULER",
+          "screenName": "Planificador de Horarios",
+          "description": "La herramienta principal para crear y gestionar los turnos.",
+          "components": [
+            {
+              "componentName": "Calendario Visual",
+              "details": "Cuadrícula con empleados en filas y días en columnas. Vistas diaria, semanal y mensual. Funcionalidad de 'arrastrar y soltar'."
+            },
+            {
+              "componentName": "Panel de Acciones",
+              "details": "Botones para 'Guardar Borrador', 'Usar Plantilla', 'Enviar para Aprobación' (Supervisor) o 'Aprobar y Publicar' (Administrador)."
+            },
+            {
+              "componentName": "Modal de Creación de Turno",
+              "details": "Formulario emergente para definir hora de inicio, fin y descansos de un turno."
+            }
+          ]
+        },
+        {
+          "screenId": "ADMIN_EMPLOYEE_MGMT",
+          "screenName": "Gestión de Colaboradores",
+          "description": "Página para administrar la lista de personal.",
+          "components": [
+            {
+              "componentName": "Lista de Colaboradores",
+              "details": "Tabla con el personal, su rol, tipo de contrato y estado. Botón para 'Añadir Colaborador'."
+            }
+          ],
+          "roleLimitations": {
+            "SUPERVISOR": "Vista de solo lectura de los miembros de su equipo."
+          }
+        },
+        {
+          "screenId": "ADMIN_REQUEST_MGMT",
+          "screenName": "Gestión de Solicitudes",
+          "description": "Centraliza todas las peticiones de los colaboradores.",
+          "components": [
+            {
+              "componentName": "Bandeja de Entrada de Solicitudes",
+              "details": "Lista de solicitudes pendientes (cambios de turno, ausencias) con opciones para 'Aprobar' o 'Rechazar' y ver documentos adjuntos."
+            }
+          ]
+        },
+        {
+          "screenId": "ADMIN_REPORTS",
+          "screenName": "Reportes y Analítica",
+          "description": "Página para generar informes de gestión.",
+          "components": [
+            {
+              "componentName": "Generador de Reportes",
+              "details": "Filtros para generar reportes por rango de fechas, tipo de hora (extra, nocturna), y empleado. Opciones para exportar a PDF/Excel."
+            }
+          ],
+          "roleLimitations": {
+            "SUPERVISOR": "Solo puede generar reportes sobre su propio equipo."
+          }
+        },
+        {
+          "screenId": "ADMIN_SETTINGS",
+          "screenName": "Configuración",
+          "description": "Área para configurar parámetros específicos de la empresa.",
+          "components": [
+            {
+              "componentName": "Configuración General",
+              "details": "Formularios para definir 'Tipos de Trabajador', crear 'Plantillas de Horarios', y gestionar permisos."
+            }
+          ],
+          "roleLimitations": {
+            "SUPERVISOR": "Acceso denegado o muy limitado."
+          }
+        }
+      ]
+    },
+    {
+      "flowName": "Portal del Colaborador",
+      "description": "Interfaz simplificada y orientada a móviles para que los empleados consulten su información.",
+      "screens": [
+        {
+          "screenId": "EMPLOYEE_SCHEDULE",
+          "screenName": "Mi Horario",
+          "description": "Vista principal donde el colaborador ve sus turnos asignados.",
+          "components": [
+            {
+              "componentName": "Calendario Personal",
+              "details": "Vista simple de calendario (semanal/mensual) que resalta los días con turnos."
+            },
+            {
+              "componentName": "Lista de Próximos Turnos",
+              "details": "Una lista cronológica de sus siguientes 3-4 turnos con fecha, hora y sede."
+            }
+          ]
+        },
+        {
+          "screenId": "EMPLOYEE_REQUEST",
+          "screenName": "Realizar una Solicitud",
+          "description": "Formulario para que el colaborador pueda enviar peticiones.",
+          "components": [
+            {
+              "componentName": "Formulario de Solicitud",
+              "details": "Campos para seleccionar tipo de solicitud (cambio, ausencia), fecha, motivo y un botón para adjuntar un documento (ej. excusa médica)."
+            }
+          ]
+        },
+        {
+          "screenId": "EMPLOYEE_NOTIFICATIONS",
+          "screenName": "Notificaciones",
+          "description": "Historial de todas las comunicaciones recibidas.",
+          "components": [
+            {
+              "componentName": "Centro de Notificaciones",
+              "details": "Una lista de todas las notificaciones recibidas: 'Horario publicado', 'Solicitud aprobada', etc."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

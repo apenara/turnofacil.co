@@ -1,0 +1,174 @@
+{
+  "documentTitle": "Documento de Requisitos de Producto (PRD) - TurnoFacil CO",
+  "version": "2.0",
+  "status": "Draft",
+  "date": "2024-10-27",
+  "sections": [
+    {
+      "sectionTitle": "1. Introducción y Visión",
+      "content": "TurnoFacil CO es una aplicación SaaS (Software as a Service) diseñada para revolucionar la gestión de horarios laborales en Colombia. La visión es convertirnos en la herramienta indispensable para las PYMEs, permitiéndoles organizar los turnos de sus trabajadores de manera eficiente, garantizando el estricto cumplimiento de la compleja legislación laboral colombiana y fomentando una comunicación transparente entre la empresa y sus colaboradores."
+    },
+    {
+      "sectionTitle": "2. Problema a Resolver",
+      "content": "Las empresas en Colombia, especialmente las PYMEs, enfrentan desafíos significativos en la gestión de horarios: 1) El proceso es manual, propenso a errores y consume mucho tiempo. 2) El riesgo de incumplir la normativa laboral (horas extras, recargos nocturnos, dominicales) es alto, lo que puede acarrear costosas sanciones. 3) La comunicación de horarios es ineficiente, generando fricción y malestar en los empleados. 4) La falta de datos dificulta la optimización de la fuerza laboral y el control de costos."
+    },
+    {
+      "sectionTitle": "3. Metas y Objetivos",
+      "content": [
+        {
+          "goal": "Simplificar la Planificación",
+          "objective": "Reducir en un 50% el tiempo que los administradores y supervisores dedican a la creación y publicación de horarios."
+        },
+        {
+          "goal": "Garantizar el Cumplimiento Legal",
+          "objective": "Lograr una precisión del 100% en el cálculo automático de todos los tipos de horas y recargos según la legislación colombiana vigente."
+        },
+        {
+          "goal": "Mejorar la Comunicación",
+          "objective": "Disminuir en un 75% las consultas y reclamos de los empleados relacionados con sus horarios mediante un portal de autoservicio."
+        },
+        {
+          "goal": "Lanzamiento del MVP",
+          "objective": "Lanzar un Producto Mínimo Viable funcional que cubra los flujos críticos de los roles Administrador del Negocio y Colaborador en un plazo de 6 meses."
+        }
+      ]
+    },
+    {
+      "sectionTitle": "4. Perfiles de Usuario (Roles)",
+      "content": "La plataforma está diseñada para cuatro roles distintos con permisos específicos:",
+      "roles": [
+        {
+          "roleName": "Super Administrador",
+          "description": "Gestiona la plataforma a nivel global. Responsable de la administración de las empresas clientes."
+        },
+        {
+          "roleName": "Administrador del Negocio",
+          "description": "Rol principal dentro de una empresa cliente. Configura la cuenta, gestiona usuarios y tiene la aprobación final sobre los horarios."
+        },
+        {
+          "roleName": "Supervisor",
+          "description": "Jefe de área o equipo. Responsable de la creación y gestión diaria de los horarios de su equipo. Es un rol opcional."
+        },
+        {
+          "roleName": "Colaborador",
+          "description": "Usuario base de la plataforma. Consulta sus horarios y gestiona sus solicitudes personales."
+        }
+      ]
+    },
+    {
+      "sectionTitle": "5. Funcionalidades y User Stories",
+      "content": "Las funcionalidades se definen a través de las siguientes historias de usuario, agrupadas por rol.",
+      "featuresByRole": [
+        {
+          "roleName": "Super Administrador",
+          "userStories": [
+            { "id": "SA-01", "story": "Como un Super Administrador, quiero aprobar el registro de una nueva empresa para que pueda convertirse en un cliente activo." },
+            { "id": "SA-02", "story": "Como un Super Administrador, quiero visualizar un dashboard con las métricas clave de la plataforma para monitorear la salud del negocio." },
+            { "id": "SA-03", "story": "Como un Super Administrador, quiero suspender o reactivar la cuenta de una empresa cliente para gestionar el acceso basado en pagos." }
+          ]
+        },
+        {
+          "roleName": "Administrador del Negocio",
+          "userStories": [
+            { "id": "BA-01", "story": "Como un Administrador, quiero configurar el perfil y los parámetros de mi empresa para que los cálculos sean precisos." },
+            { "id": "BA-02", "story": "Como un Administrador, quiero crear, editar y desactivar usuarios para mantener actualizada la lista de personal." },
+            { "id": "BA-03", "story": "Como un Administrador, quiero revisar y aprobar los horarios propuestos por un supervisor para asegurar que cumplen con costos y normativas." },
+            { "id": "BA-04", "story": "Como un Administrador, quiero ver los reportes de toda la empresa para analizar costos y eficiencia." }
+          ]
+        },
+        {
+          "roleName": "Supervisor",
+          "userStories": [
+            { "id": "SP-01", "story": "Como un Supervisor, quiero crear un horario semanal para mi equipo usando un calendario visual para asignar turnos de forma rápida." },
+            { "id": "SP-02", "story": "Como un Supervisor, quiero someter el horario a aprobación para formalizar la planificación." },
+            { "id": "SP-03", "story": "Como un Supervisor, quiero gestionar las solicitudes de mi equipo para mantener el horario actualizado." }
+          ]
+        },
+        {
+          "roleName": "Colaborador",
+          "userStories": [
+            { "id": "EM-01", "story": "Como un Colaborador, quiero ver mi horario de trabajo en un calendario para saber cuándo debo trabajar." },
+            { "id": "EM-02", "story": "Como un Colaborador, quiero recibir notificaciones de cambios en mi horario para estar siempre informado." },
+            { "id": "EM-03", "story": "Como un Colaborador, quiero solicitar un cambio en un turno para gestionar mis compromisos personales." },
+            { "id": "EM-04", "story": "Como un Colaborador, quiero reportar una ausencia y adjuntar un justificante para informar a mi supervisor de manera formal." }
+          ]
+        }
+      ]
+    },
+    {
+      "sectionTitle": "6. Flujos de Usuario y Diseño",
+      "content": "La experiencia de usuario se estructura en torno a los siguientes flujos principales. Todo el desarrollo de la interfaz de usuario debe adherirse estrictamente al 'TurnoFacil CO Design System'.",
+      "userFlows": [
+        {
+          "flowName": "Sitio Público y Onboarding",
+          "screens": ["Landing Page", "Precios", "Login", "Flujo de Registro de Empresa"]
+        },
+        {
+          "flowName": "Dashboard del Super Administrador",
+          "screens": ["Dashboard Principal", "Gestión de Clientes"]
+        },
+        {
+          "flowName": "Dashboard de Administración",
+          "screens": ["Dashboard Resumen", "Planificador de Horarios", "Gestión de Colaboradores", "Gestión de Solicitudes", "Reportes", "Configuración"]
+        },
+        {
+          "flowName": "Portal del Colaborador",
+          "screens": ["Mi Horario", "Realizar Solicitud", "Notificaciones"]
+        }
+      ],
+      "designSystemReference": {
+        "name": "TurnoFacil CO Design System v1.0.0",
+        "keyElements": {
+          "colorPalette": "Andino (Primario: #0D9488, Secundario: #F59E0B)",
+          "typography": "Fuente 'Inter', con una escala definida para encabezados y cuerpo de texto.",
+          "coreComponents": ["Button", "Input Field", "Card", "Modal", "Tag"],
+          "iconography": "Heroicons (Outline, 24px)"
+        }
+      }
+    },
+    {
+      "sectionTitle": "7. Requisitos No Funcionales",
+      "content": [
+        {
+          "requirement": "Tecnología",
+          "details": "El stack tecnológico será: Frontend Web (Next.js), Frontend Móvil (Flutter), Backend (NestJS con TypeScript), Base de Datos (PostgreSQL), Despliegue (Vercel para web y Railway/AWS para backend)."
+        },
+        {
+          "requirement": "Rendimiento",
+          "details": "Los tiempos de carga de las páginas interactivas no deben superar los 2 segundos. Las consultas a la base de datos deben resolverse en menos de 500ms."
+        },
+        {
+          "requirement": "Seguridad",
+          "details": "Se implementará control de acceso basado en roles (RBAC). Todos los datos en tránsito y en reposo deben estar encriptados. Se seguirán las mejores prácticas de OWASP."
+        },
+        {
+          "requirement": "Escalabilidad",
+          "details": "La arquitectura debe ser capaz de soportar un crecimiento inicial a 500 empresas y 10,000 usuarios sin degradación del rendimiento."
+        },
+        {
+          "requirement": "Disponibilidad",
+          "details": "Se espera un tiempo de actividad (uptime) del 99.5% para todos los servicios críticos."
+        }
+      ]
+    },
+    {
+      "sectionTitle": "8. Métricas de Éxito",
+      "content": [
+        { "metric": "Tasa de Activación", "kpi": "Número de nuevas empresas que completan el onboarding y publican su primer horario." },
+        { "metric": "Engagement", "kpi": "Ratio de Usuarios Activos Diarios sobre Usuarios Activos Mensuales (DAU/MAU) superior al 30%." },
+        { "metric": "Retención", "kpi": "Tasa de abandono (Churn Rate) mensual inferior al 5%." },
+        { "metric": "Satisfacción", "kpi": "Puntaje Neto del Promotor (NPS) superior a 40 tanto para administradores como para colaboradores." }
+      ]
+    },
+    {
+      "sectionTitle": "9. Fuera de Alcance (Para el MVP)",
+      "content": [
+        "Integración directa con sistemas de nómina de terceros.",
+        "Optimización de horarios automática mediante inteligencia artificial.",
+        "Funcionalidad de fichaje (clock-in/clock-out).",
+        "Soporte para múltiples idiomas (inicialmente solo español-CO).",
+        "Aplicación nativa para escritorio (Desktop)."
+      ]
+    }
+  ]
+}
