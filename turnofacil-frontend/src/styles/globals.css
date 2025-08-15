@@ -3,12 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    @apply antialiased;
-  }
-  
-  body {
-    @apply bg-neutral-off-white text-neutral-black;
-  }
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #f9fafb;
+  color: #111827;
 }
