@@ -1,5 +1,9 @@
 {
   "permissions": {
+    "allow": [
+      "mcp__puppeteer__puppeteer_evaluate",
+      "mcp__puppeteer__puppeteer_screenshot"
+    ],
     "defaultMode": "acceptEdits"
   }
 }

@@ -12,11 +12,11 @@ export const Tag: React.FC<TagProps> = ({
   className = ''
 }) => {
   const variants = {
-    success: 'bg-semantic-success text-white',
-    warning: 'bg-semantic-warning text-neutral-black',
-    error: 'bg-semantic-error text-white',
-    info: 'bg-semantic-info text-white',
-    default: 'bg-neutral-light-gray text-neutral-dark-gray'
+    success: 'bg-green-500 text-white',
+    warning: 'bg-yellow-500 text-black',
+    error: 'bg-red-500 text-white',
+    info: 'bg-blue-500 text-white',
+    default: 'bg-gray-200 text-gray-700'
   }
   
   return (
@@ -25,7 +25,7 @@ export const Tag: React.FC<TagProps> = ({
         inline-block 
         px-2 py-1 
         rounded-full 
-        text-caption 
+        text-sm 
         font-medium
         ${variants[variant]}
         ${className}

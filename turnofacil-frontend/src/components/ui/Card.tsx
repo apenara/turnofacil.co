@@ -15,7 +15,7 @@ export const Card: React.FC<CardProps> = ({
     <div 
       className={`
         bg-white 
-        p-lg 
+        p-6 
         rounded-lg 
         shadow-md 
         ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow duration-200' : ''}

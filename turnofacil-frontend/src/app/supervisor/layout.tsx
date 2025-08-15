@@ -2,6 +2,7 @@
 
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { DashboardLayout } from '@/components/shared/DashboardLayout'
+import { NotificationProvider } from '@/components/shared/NotificationSystem'
 
 const navigation = [
   {
@@ -15,8 +16,8 @@ const navigation = [
     )
   },
   {
-    name: 'Planificador',
-    href: '/supervisor/scheduler',
+    name: 'Creador de Horarios',
+    href: '/supervisor/schedule-creator',
     current: false,
     icon: (
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,9 +64,11 @@ export default function SupervisorLayout({
 }) {
   return (
     <AuthGuard allowedRoles={['SUPERVISOR']}>
-      <DashboardLayout navigation={navigation}>
-        {children}
-      </DashboardLayout>
+      <NotificationProvider>
+        <DashboardLayout navigation={navigation}>
+          {children}
+        </DashboardLayout>
+      </NotificationProvider>
     </AuthGuard>
   )
 }

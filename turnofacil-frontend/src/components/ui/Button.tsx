@@ -14,13 +14,13 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const baseStyles = 'font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center'
   
   const variants = {
-    primary: 'bg-primary text-white hover:bg-primary-dark focus:ring-primary disabled:bg-primary/50',
-    secondary: 'bg-transparent border-2 border-primary text-primary hover:bg-primary/10 focus:ring-primary disabled:border-primary/50 disabled:text-primary/50',
-    danger: 'bg-semantic-error text-white hover:bg-red-600 focus:ring-semantic-error disabled:bg-semantic-error/50',
-    text: 'bg-transparent text-primary hover:text-primary-dark focus:ring-primary disabled:text-primary/50'
+    primary: 'bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500 disabled:bg-gray-300',
+    secondary: 'bg-transparent border-2 border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500 disabled:border-gray-300 disabled:text-gray-300',
+    danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 disabled:bg-gray-300',
+    text: 'bg-transparent text-primary-500 hover:text-primary-600 focus:ring-primary-500 disabled:text-gray-300'
   }
   
   const sizes = {

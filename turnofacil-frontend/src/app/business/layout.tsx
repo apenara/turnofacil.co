@@ -55,6 +55,37 @@ const navigation = [
     )
   },
   {
+    name: 'Ubicaciones',
+    href: '/business/locations',
+    current: false,
+    icon: (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    )
+  },
+  {
+    name: 'Posiciones',
+    href: '/business/positions',
+    current: false,
+    icon: (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 00-2 2H10a2 2 0 00-2-2V6m8 0h2a2 2 0 012 2v6.5M16 6H8M8 18v4.07M16 18v4.07" />
+      </svg>
+    )
+  },
+  {
+    name: 'Aprobaciones',
+    href: '/business/schedule-approvals',
+    current: false,
+    icon: (
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )
+  },
+  {
     name: 'Configuración',
     href: '/business/settings',
     current: false,

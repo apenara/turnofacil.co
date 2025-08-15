@@ -22,7 +22,7 @@ export const Input: React.FC<InputProps> = ({
       {label && (
         <label 
           htmlFor={inputId} 
-          className="block text-caption text-neutral-dark-gray mb-1"
+          className="block text-sm text-gray-700 mb-1"
         >
           {label}
         </label>
@@ -30,20 +30,20 @@ export const Input: React.FC<InputProps> = ({
       <input
         id={inputId}
         className={`
-          w-full px-sm py-sm rounded-md border
+          w-full px-3 py-2 rounded-md border
           ${error 
-            ? 'border-semantic-error focus:border-semantic-error focus:ring-semantic-error' 
-            : 'border-neutral-light-gray focus:border-primary focus:ring-primary'
+            ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+            : 'border-gray-300 focus:border-primary-500 focus:ring-primary-500'
           }
-          bg-white text-neutral-black
+          bg-white text-gray-900
           focus:outline-none focus:ring-2 focus:ring-opacity-20
-          disabled:bg-neutral-off-white disabled:text-neutral-medium-gray disabled:cursor-not-allowed
+          disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
           ${className}
         `}
         {...props}
       />
       {(error || helperText) && (
-        <p className={`mt-1 text-caption ${error ? 'text-semantic-error' : 'text-neutral-medium-gray'}`}>
+        <p className={`mt-1 text-sm ${error ? 'text-red-500' : 'text-gray-500'}`}>
           {error || helperText}
         </p>
       )}
