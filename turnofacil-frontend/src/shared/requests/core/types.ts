@@ -433,7 +433,6 @@ export interface RequestContext {
     email: string
     role: UserRole
     locationId?: string
-    permissions: RequestPermissions
   }
   
   location: {
@@ -522,11 +521,11 @@ export interface UseRequestsResult {
 }
 
 export interface RequestFilters {
-  status: RequestStatus[] | 'all'
-  type: RequestType[] | 'all'
-  priority: RequestPriority[] | 'all'
-  location: string[] | 'all'
-  employee: string[] | 'all'
+  status: RequestStatus[] | RequestStatus | 'all'
+  type: RequestType[] | RequestType | 'all'
+  priority: RequestPriority[] | RequestPriority | 'all'
+  location: string[] | string | 'all'
+  employee: string[] | string | 'all'
   dateRange: {
     start?: string
     end?: string

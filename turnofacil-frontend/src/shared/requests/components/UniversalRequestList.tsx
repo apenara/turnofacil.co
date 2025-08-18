@@ -44,28 +44,59 @@ export function UniversalRequestList({
   className = ''
 }: UniversalRequestListProps) {
 
-  // ========== HOOKS SEGÚN EL MODO ==========
+  // ========== CONFIGURACIÓN SEGÚN EL MODO ==========
 
-  const employeeHook = useEmployeeRequests(context)
-  const supervisorHook = useSupervisorRequests(context)
-  const businessAdminHook = useBusinessAdminRequests(context)
-  const customHook = useRequestCore({
-    context,
-    autoRefresh: true,
-    enableAnalytics: showMetrics,
-    enableMetrics: showMetrics,
-    initialFilters: customFilters
-  })
-
-  // Seleccionar hook según modo
-  const activeHook = useMemo(() => {
-    switch (mode) {
-      case 'employee': return employeeHook
-      case 'supervisor': return supervisorHook
-      case 'business_admin': return businessAdminHook
-      default: return customHook
+  const hookConfig = useMemo(() => {
+    const baseConfig = {
+      context,
+      autoRefresh: true,
+      enableAnalytics: showMetrics,
+      enableMetrics: showMetrics,
+      initialFilters: customFilters
     }
-  }, [mode, employeeHook, supervisorHook, businessAdminHook, customHook])
+
+    switch (mode) {
+      case 'employee':
+        return {
+          ...baseConfig,
+          enableAnalytics: false,
+          enableMetrics: false,
+          initialFilters: {
+            ...customFilters,
+            employee: [context.user.id],
+            sortBy: 'date' as const,
+            sortOrder: 'desc' as const
+          }
+        }
+      case 'supervisor':
+        return {
+          ...baseConfig,
+          refreshInterval: 20000,
+          initialFilters: {
+            ...customFilters,
+            location: context.user.locationId ? [context.user.locationId] : 'all',
+            sortBy: 'priority' as const,
+            sortOrder: 'desc' as const
+          }
+        }
+      case 'business_admin':
+        return {
+          ...baseConfig,
+          refreshInterval: 15000,
+          initialFilters: {
+            ...customFilters,
+            location: 'all',
+            sortBy: 'priority' as const,
+            sortOrder: 'desc' as const
+          }
+        }
+      default:
+        return baseConfig
+    }
+  }, [mode, context, showMetrics, customFilters])
+
+  // Un solo hook con configuración dinámica
+  const activeHook = useRequestCore(hookConfig)
 
   const {
     requests,
