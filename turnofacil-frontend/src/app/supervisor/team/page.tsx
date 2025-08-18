@@ -407,12 +407,12 @@ export default function TeamPage() {
                   <p className="text-xs font-medium text-gray-700 mb-2">Habilidades:</p>
                   <div className="flex flex-wrap gap-1">
                     {member.skills.slice(0, 3).map((skill, index) => (
-                      <Tag key={index} variant="info" size="sm">
+                      <Tag key={index} variant="info">
                         {skill}
                       </Tag>
                     ))}
                     {member.skills.length > 3 && (
-                      <Tag variant="default" size="sm">
+                      <Tag variant="default">
                         +{member.skills.length - 3}
                       </Tag>
                     )}

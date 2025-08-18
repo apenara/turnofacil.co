@@ -441,7 +441,7 @@ export default function RequestsPage() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Tag variant={getPriorityColor(request.priority)} size="sm">
+                    <Tag variant={getPriorityColor(request.priority)}>
                       {getPriorityText(request.priority)}
                     </Tag>
                   </td>
@@ -456,8 +456,7 @@ export default function RequestsPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Button
                       variant="text"
-                      size="sm"
-                      onClick={() => openRequestDetail(request)}
+                                            onClick={() => openRequestDetail(request)}
                     >
                       {request.status === 'pending' ? 'Revisar' : 'Ver Detalles'}
                     </Button>

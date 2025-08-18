@@ -1,59 +1,114 @@
 /**
- * Página del Creador de Horarios - Refactorizada
- * @fileoverview Componente principal que coordina todos los módulos del schedule creator
+ * Página del Business Scheduler - Refactorizada
+ * @fileoverview Planificador de horarios para business admin con múltiples ubicaciones
  */
 
 'use client'
 
 import React, { useState, useCallback, useMemo } from 'react'
+import { Card, Button, Input, Modal, Tag } from '@/components/ui'
 import { useNotifications } from '@/components/shared/NotificationSystem'
 
-// Importar todos los hooks personalizados
-import {
-  useWeekCalculations,
-  useShiftManagement,
-  useRestDayManagement,
-  useLeaveManagement,
-  useScheduleValidation
-} from './hooks'
-
-// Importar todos los componentes
+// Importar componentes reutilizables del supervisor
 import {
   WeekSelector,
   TabNavigation,
   SimpleWeeklyCalendar,
   EmployeesList,
   ShiftCreationModal,
-  RestDayManager,
   TemplateManager,
   ValidationPanel,
   WeekSummary,
   QuickActions,
   type TabType
-} from './components'
+} from '../../supervisor/schedule-creator/components'
+
+// Importar hooks reutilizables del supervisor
+import {
+  useWeekCalculations,
+  useShiftManagement,
+  useScheduleValidation
+} from '../../supervisor/schedule-creator/hooks'
 
 // Importar tipos y utilidades
-import { Employee, ShiftTemplate, ScheduleShift } from './types'
-import { getCurrentWeekString } from './utils'
+import { 
+  Employee, 
+  ShiftTemplate, 
+  ScheduleShift 
+} from '../../supervisor/schedule-creator/types'
+
+interface Location {
+  id: string
+  name: string
+  address: string
+  employeeCount: number
+  activeShifts: number
+  weeklyBudget: number
+  weeklySpent: number
+}
+
+interface BudgetPeriod {
+  id: string
+  year: number
+  month?: number
+  quarter?: number
+  amount: number
+  allocated: number
+  spent: number
+}
 
 /**
- * Datos de ejemplo del supervisor (normalmente vendrían de una API)
+ * Datos de ejemplo de ubicaciones
  */
-const SUPERVISOR_EMPLOYEES: Employee[] = [
+const MOCK_LOCATIONS: Location[] = [
+  {
+    id: '1',
+    name: 'Sede Centro',
+    address: 'Cra 7 #45-23, Bogotá',
+    employeeCount: 15,
+    activeShifts: 8,
+    weeklyBudget: 12000000,
+    weeklySpent: 8500000
+  },
+  {
+    id: '2',
+    name: 'Sede Norte',
+    address: 'Cll 140 #15-30, Bogotá',
+    employeeCount: 12,
+    activeShifts: 6,
+    weeklyBudget: 10000000,
+    weeklySpent: 7200000
+  },
+  {
+    id: '3',
+    name: 'Sede Chapinero',
+    address: 'Cll 67 #9-45, Bogotá',
+    employeeCount: 10,
+    activeShifts: 5,
+    weeklyBudget: 8000000,
+    weeklySpent: 6100000
+  }
+]
+
+/**
+ * Datos de ejemplo de empleados por ubicación
+ */
+const BUSINESS_EMPLOYEES: Employee[] = [
+  // Sede Centro
   {
     id: '1',
     name: 'Carlos López',
-    position: 'Cocinero',
+    position: 'Gerente',
     locationId: '1',
     maxWeeklyHours: 48,
-    hourlyRate: 6250,
-    skills: ['Cocina', 'Parrilla', 'Preparación'],
+    hourlyRate: 8000,
+    skills: ['Gestión', 'Ventas', 'Liderazgo'],
     availability: [
-      { day: 1, available: true, startTime: '06:00', endTime: '18:00' },
-      { day: 2, available: true, startTime: '06:00', endTime: '18:00' },
-      { day: 3, available: true, startTime: '06:00', endTime: '18:00' },
-      { day: 4, available: true, startTime: '06:00', endTime: '18:00' },
-      { day: 5, available: true, startTime: '06:00', endTime: '18:00' },
+      { day: 1, available: true, startTime: '08:00', endTime: '18:00' },
+      { day: 2, available: true, startTime: '08:00', endTime: '18:00' },
+      { day: 3, available: true, startTime: '08:00', endTime: '18:00' },
+      { day: 4, available: true, startTime: '08:00', endTime: '18:00' },
+      { day: 5, available: true, startTime: '08:00', endTime: '18:00' },
       { day: 6, available: false },
       { day: 0, available: false }
     ]
@@ -61,29 +116,49 @@ const SUPERVISOR_EMPLOYEES: Employee[] = [
   {
     id: '2',
     name: 'Ana Martínez',
-    position: 'Mesera',
+    position: 'Supervisora',
     locationId: '1',
     maxWeeklyHours: 44,
-    hourlyRate: 5729,
-    skills: ['Atención al cliente', 'Caja', 'Servicio'],
+    hourlyRate: 7000,
+    skills: ['Supervisión', 'Atención al cliente', 'Capacitación'],
     availability: [
-      { day: 1, available: true, startTime: '14:00', endTime: '23:00' },
-      { day: 2, available: true, startTime: '14:00', endTime: '23:00' },
-      { day: 3, available: true, startTime: '14:00', endTime: '23:00' },
-      { day: 4, available: true, startTime: '14:00', endTime: '23:00' },
-      { day: 5, available: true, startTime: '14:00', endTime: '23:00' },
-      { day: 6, available: true, startTime: '12:00', endTime: '22:00' },
-      { day: 0, available: true, startTime: '12:00', endTime: '22:00' }
+      { day: 1, available: true, startTime: '09:00', endTime: '19:00' },
+      { day: 2, available: true, startTime: '09:00', endTime: '19:00' },
+      { day: 3, available: true, startTime: '09:00', endTime: '19:00' },
+      { day: 4, available: true, startTime: '09:00', endTime: '19:00' },
+      { day: 5, available: true, startTime: '09:00', endTime: '19:00' },
+      { day: 6, available: true, startTime: '10:00', endTime: '16:00' },
+      { day: 0, available: false }
     ]
   },
+  // Sede Norte
   {
     id: '3',
     name: 'Luis Rodríguez',
-    position: 'Cajero',
-    locationId: '1',
+    position: 'Coordinador',
+    locationId: '2',
     maxWeeklyHours: 40,
-    hourlyRate: 5989,
-    skills: ['Caja', 'Atención al cliente', 'Ventas'],
+    hourlyRate: 6500,
+    skills: ['Coordinación', 'Logística', 'Inventario'],
+    availability: [
+      { day: 1, available: true, startTime: '07:00', endTime: '17:00' },
+      { day: 2, available: true, startTime: '07:00', endTime: '17:00' },
+      { day: 3, available: true, startTime: '07:00', endTime: '17:00' },
+      { day: 4, available: true, startTime: '07:00', endTime: '17:00' },
+      { day: 5, available: true, startTime: '07:00', endTime: '17:00' },
+      { day: 6, available: false },
+      { day: 0, available: false }
+    ]
+  },
+  // Sede Chapinero
+  {
+    id: '4',
+    name: 'Elena García',
+    position: 'Asistente',
+    locationId: '3',
+    maxWeeklyHours: 40,
+    hourlyRate: 5500,
+    skills: ['Administración', 'Archivo', 'Atención telefónica'],
     availability: [
       { day: 1, available: true, startTime: '08:00', endTime: '16:00' },
       { day: 2, available: true, startTime: '08:00', endTime: '16:00' },
@@ -93,132 +168,56 @@ const SUPERVISOR_EMPLOYEES: Employee[] = [
       { day: 6, available: false },
       { day: 0, available: false }
     ]
-  },
-  {
-    id: '4',
-    name: 'Elena García',
-    position: 'Mesera',
-    locationId: '1',
-    maxWeeklyHours: 44,
-    hourlyRate: 5729,
-    skills: ['Atención al cliente', 'Servicio', 'Barista'],
-    availability: [
-      { day: 1, available: true, startTime: '06:00', endTime: '14:00' },
-      { day: 2, available: true, startTime: '06:00', endTime: '14:00' },
-      { day: 3, available: true, startTime: '06:00', endTime: '14:00' },
-      { day: 4, available: true, startTime: '06:00', endTime: '14:00' },
-      { day: 5, available: true, startTime: '06:00', endTime: '14:00' },
-      { day: 6, available: true, startTime: '08:00', endTime: '16:00' },
-      { day: 0, available: true, startTime: '08:00', endTime: '16:00' }
-    ]
-  },
-  {
-    id: '5',
-    name: 'Pedro Sánchez',
-    position: 'Cocinero',
-    locationId: '1',
-    maxWeeklyHours: 48,
-    hourlyRate: 6250,
-    skills: ['Cocina', 'Repostería', 'Inventario'],
-    availability: [
-      { day: 1, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 2, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 3, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 4, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 5, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 6, available: true, startTime: '14:00', endTime: '22:00' },
-      { day: 0, available: false }
-    ]
-  },
-  {
-    id: '6',
-    name: 'Sofia Herrera',
-    position: 'Hostess',
-    locationId: '1',
-    maxWeeklyHours: 40,
-    hourlyRate: 5500,
-    skills: ['Atención al cliente', 'Reservas', 'Idiomas'],
-    availability: [
-      { day: 1, available: true, startTime: '10:00', endTime: '18:00' },
-      { day: 2, available: true, startTime: '10:00', endTime: '18:00' },
-      { day: 3, available: true, startTime: '10:00', endTime: '18:00' },
-      { day: 4, available: true, startTime: '10:00', endTime: '18:00' },
-      { day: 5, available: true, startTime: '10:00', endTime: '22:00' },
-      { day: 6, available: true, startTime: '10:00', endTime: '22:00' },
-      { day: 0, available: true, startTime: '10:00', endTime: '18:00' }
-    ]
   }
 ]
 
 /**
- * Plantillas de turnos por defecto
+ * Plantillas de turnos por defecto para business
  */
-const DEFAULT_TEMPLATES: ShiftTemplate[] = [
+const BUSINESS_TEMPLATES: ShiftTemplate[] = [
   {
-    id: 'template-1',
-    name: 'Turno Mañana',
-    startTime: '06:00',
-    endTime: '14:00',
-    duration: 8,
+    id: 'biz-template-1',
+    name: 'Turno Administrativo',
+    startTime: '08:00',
+    endTime: '17:00',
+    duration: 9,
     type: 'regular',
     color: '#10B981',
-    description: 'Turno regular de mañana',
+    description: 'Turno administrativo estándar',
     crossesMidnight: false
   },
   {
-    id: 'template-2',
-    name: 'Turno Tarde',
-    startTime: '14:00',
-    endTime: '22:00',
-    duration: 8,
+    id: 'biz-template-2',
+    name: 'Turno Gerencial',
+    startTime: '09:00',
+    endTime: '18:00',
+    duration: 9,
     type: 'regular',
     color: '#3B82F6',
-    description: 'Turno regular de tarde',
+    description: 'Turno para personal gerencial',
     crossesMidnight: false
   },
   {
-    id: 'template-3',
-    name: 'Turno Noche',
-    startTime: '22:00',
-    endTime: '06:00',
-    duration: 8,
-    type: 'night',
-    color: '#8B5CF6',
-    description: 'Turno nocturno con recargo',
-    crossesMidnight: true
-  },
-  {
-    id: 'template-4',
-    name: 'Media Jornada',
-    startTime: '09:00',
-    endTime: '13:00',
-    duration: 4,
-    type: 'regular',
+    id: 'biz-template-3',
+    name: 'Turno Extendido',
+    startTime: '07:00',
+    endTime: '19:00',
+    duration: 12,
+    type: 'overtime',
     color: '#F59E0B',
-    description: 'Turno de media jornada',
+    description: 'Turno extendido con horas extra',
     crossesMidnight: false
   }
 ]
 
 /**
- * Configuración del restaurante
+ * Componente principal del business scheduler
  */
-const RESTAURANT_CONFIG = {
-  weeklyBudget: 8000000, // 8 millones COP por semana
-  location: {
-    id: '1',
-    name: 'Restaurante Centro',
-    address: 'Cra 7 #45-23, Bogotá'
-  }
-}
-
-/**
- * Componente principal del creador de horarios
- */
-export default function ScheduleCreatorPage() {
+export default function BusinessSchedulerPage() {
   const { addNotification } = useNotifications()
   
-  // Estado de la UI
+  // Estado local para business-specific features
+  const [selectedLocationId, setSelectedLocationId] = useState<string>('all')
   const [activeTab, setActiveTab] = useState<TabType>('calendar')
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
   const [shiftModalState, setShiftModalState] = useState<{
@@ -228,14 +227,13 @@ export default function ScheduleCreatorPage() {
     preselectedDate?: string
     preselectedStartTime?: string
   }>({ isOpen: false })
-  const [templates, setTemplates] = useState<ShiftTemplate[]>(DEFAULT_TEMPLATES)
+  const [templates, setTemplates] = useState<ShiftTemplate[]>(BUSINESS_TEMPLATES)
 
   // Hook de gestión de semanas
   const weekCalculations = useWeekCalculations()
   const {
     weekConfig,
     weekInfo,
-    specialDays,
     navigationInfo,
     goToPreviousWeek,
     goToNextWeek,
@@ -245,10 +243,27 @@ export default function ScheduleCreatorPage() {
     calculateWeekSummary
   } = weekCalculations
 
+  // Filtrar empleados por ubicación seleccionada
+  const filteredEmployees = useMemo(() => {
+    if (selectedLocationId === 'all') {
+      return BUSINESS_EMPLOYEES
+    }
+    return BUSINESS_EMPLOYEES.filter(emp => emp.locationId === selectedLocationId)
+  }, [selectedLocationId])
+
+  // Calcular presupuesto total o por ubicación
+  const totalBudget = useMemo(() => {
+    if (selectedLocationId === 'all') {
+      return MOCK_LOCATIONS.reduce((sum, loc) => sum + loc.weeklyBudget, 0)
+    }
+    const location = MOCK_LOCATIONS.find(loc => loc.id === selectedLocationId)
+    return location?.weeklyBudget || 0
+  }, [selectedLocationId])
+
   // Hook de gestión de turnos
   const shiftManagement = useShiftManagement(
-    SUPERVISOR_EMPLOYEES,
-    RESTAURANT_CONFIG.weeklyBudget,
+    filteredEmployees,
+    totalBudget,
     weekConfig.dates
   )
   const {
@@ -263,35 +278,6 @@ export default function ScheduleCreatorPage() {
     clearAllShifts
   } = shiftManagement
 
-  // Hook de gestión de días de descanso
-  const restDayManagement = useRestDayManagement(
-    SUPERVISOR_EMPLOYEES,
-    shifts,
-    weekConfig.dates
-  )
-  const {
-    restDays,
-    compliance,
-    recommendations,
-    complianceStats,
-    createRestDay,
-    deleteRestDay,
-    autoAssignRestDays
-  } = restDayManagement
-
-  // Hook de gestión de licencias
-  const leaveManagement = useLeaveManagement(
-    SUPERVISOR_EMPLOYEES,
-    shifts,
-    weekConfig.dates
-  )
-  const {
-    leaves,
-    employeeStats,
-    leaveConflicts,
-    weeklyLeaves
-  } = leaveManagement
-
   // Hook de validación
   const validation = useScheduleValidation({
     config: {
@@ -304,12 +290,12 @@ export default function ScheduleCreatorPage() {
       enforceAvailability: true
     },
     shifts,
-    employees: SUPERVISOR_EMPLOYEES,
-    restDays,
-    leaves: weeklyLeaves,
+    employees: filteredEmployees,
+    restDays: [],
+    leaves: [],
     weekDates: weekConfig.dates,
     budgetInfo: {
-      weeklyBudget: RESTAURANT_CONFIG.weeklyBudget,
+      weeklyBudget: totalBudget,
       currentSpent: metrics.weeklyCost,
       alertThreshold: 85
     }
@@ -317,8 +303,8 @@ export default function ScheduleCreatorPage() {
 
   // Resumen semanal calculado
   const weekSummary = useMemo(() => {
-    return calculateWeekSummary(shifts, SUPERVISOR_EMPLOYEES, RESTAURANT_CONFIG.weeklyBudget)
-  }, [shifts, calculateWeekSummary])
+    return calculateWeekSummary(shifts, filteredEmployees, totalBudget)
+  }, [shifts, filteredEmployees, totalBudget, calculateWeekSummary])
 
   // Opciones de semanas para el selector
   const weekOptions = useMemo(() => {
@@ -347,11 +333,10 @@ export default function ScheduleCreatorPage() {
     setShiftModalState({ isOpen: false })
   }, [])
 
-  // Manejadores de acciones rápidas
+  // Manejadores de acciones
   const handleSave = useCallback(async () => {
     try {
-      // Aquí se implementaría la lógica de guardado
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulación
+      await new Promise(resolve => setTimeout(resolve, 1000))
       addNotification({
         type: 'success',
         title: 'Horario Guardado',
@@ -368,7 +353,7 @@ export default function ScheduleCreatorPage() {
 
   const handleValidate = useCallback(async () => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500)) // Simulación
+      await new Promise(resolve => setTimeout(resolve, 500))
       if (validation.isValid) {
         addNotification({
           type: 'success',
@@ -395,7 +380,7 @@ export default function ScheduleCreatorPage() {
   const handleCreateTemplate = useCallback(async (templateData: Omit<ShiftTemplate, 'id'>) => {
     const newTemplate: ShiftTemplate = {
       ...templateData,
-      id: `template-${Date.now()}`
+      id: `biz-template-${Date.now()}`
     }
     setTemplates(prev => [...prev, newTemplate])
     addNotification({
@@ -428,8 +413,48 @@ export default function ScheduleCreatorPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Header con selector de semana */}
+        {/* Header */}
         <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">Planificador de Horarios</h1>
+              <p className="text-gray-600">Gestiona horarios para todas las ubicaciones</p>
+            </div>
+          </div>
+
+          {/* Location Selector */}
+          <div className="mb-4">
+            <Card className="p-4">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ubicación
+                  </label>
+                  <select
+                    value={selectedLocationId}
+                    onChange={(e) => setSelectedLocationId(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="all">Todas las ubicaciones</option>
+                    {MOCK_LOCATIONS.map((location) => (
+                      <option key={location.id} value={location.id}>
+                        {location.name} - {location.employeeCount} empleados
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {selectedLocationId !== 'all' && (
+                  <div className="text-sm text-gray-600">
+                    <p><strong>Dirección:</strong> {MOCK_LOCATIONS.find(l => l.id === selectedLocationId)?.address}</p>
+                    <p><strong>Presupuesto semanal:</strong> ${totalBudget.toLocaleString('es-CO')}</p>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </div>
+
+          {/* Week Selector */}
           <WeekSelector
             currentWeek={weekInfo.weekString}
             weekRange={weekInfo.rangeString}
@@ -452,14 +477,14 @@ export default function ScheduleCreatorPage() {
             onTabChange={setActiveTab}
             validationErrors={validation.summary.totalErrors}
             validationWarnings={validation.summary.totalWarnings}
-            employeeCount={SUPERVISOR_EMPLOYEES.length}
+            employeeCount={filteredEmployees.length}
             shiftsCount={shifts.length}
-            restDaysCount={restDays.length}
+            restDaysCount={0}
             templatesCount={templates.length}
           />
         </div>
 
-        {/* Contenido principal por pestañas */}
+        {/* Contenido principal */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Contenido principal */}
           <div className="lg:col-span-3">
@@ -467,10 +492,10 @@ export default function ScheduleCreatorPage() {
               <div className="space-y-6">
                 <SimpleWeeklyCalendar
                   weekDates={weekConfig.dates}
-                  employees={SUPERVISOR_EMPLOYEES}
+                  employees={filteredEmployees}
                   shifts={shifts}
-                  restDays={restDays}
-                  leaves={weeklyLeaves}
+                  restDays={[]}
+                  leaves={[]}
                   selectedShift={selectedShift}
                   onShiftSelect={setSelectedShift}
                   onCreateShift={handleCreateShift}
@@ -480,7 +505,7 @@ export default function ScheduleCreatorPage() {
                 
                 <WeekSummary
                   summary={weekSummary}
-                  weeklyBudget={RESTAURANT_CONFIG.weeklyBudget}
+                  weeklyBudget={totalBudget}
                   showComparison={false}
                   showCharts={true}
                 />
@@ -489,53 +514,17 @@ export default function ScheduleCreatorPage() {
 
             {activeTab === 'employees' && (
               <EmployeesList
-                employees={SUPERVISOR_EMPLOYEES}
+                employees={filteredEmployees}
                 shifts={shifts}
-                restDays={restDays}
-                leaves={weeklyLeaves}
+                restDays={[]}
+                leaves={[]}
                 selectedEmployeeId={selectedEmployeeId}
                 onEmployeeSelect={setSelectedEmployeeId}
                 onCreateShift={(employeeId: string) => {
                   setSelectedEmployeeId(employeeId)
                   setActiveTab('calendar')
                 }}
-                onAssignRestDay={(_employeeId) => {
-                  // Lógica para asignar día de descanso
-                  setActiveTab('rest-days')
-                }}
                 showDetails={true}
-              />
-            )}
-
-            {activeTab === 'shifts' && (
-              <div className="space-y-6">
-                <SimpleWeeklyCalendar
-                  weekDates={weekConfig.dates}
-                  employees={SUPERVISOR_EMPLOYEES}
-                  shifts={shifts}
-                  restDays={restDays}
-                  leaves={weeklyLeaves}
-                  selectedShift={selectedShift}
-                  onShiftSelect={setSelectedShift}
-                  onCreateShift={handleCreateShift}
-                  onEditShift={handleEditShift}
-                  onDeleteShift={deleteShift}
-                />
-              </div>
-            )}
-
-            {activeTab === 'rest-days' && (
-              <RestDayManager
-                employees={SUPERVISOR_EMPLOYEES}
-                shifts={shifts}
-                restDays={restDays}
-                weekDates={weekConfig.dates}
-                compliance={compliance}
-                recommendations={recommendations}
-                onCreateRestDay={async (data) => { await createRestDay(data); }}
-                onDeleteRestDay={async (id) => { await deleteRestDay(id); }}
-                onAutoAssignRestDays={async () => { await autoAssignRestDays(); }}
-                isLoading={restDayManagement.isLoading}
               />
             )}
 
@@ -545,7 +534,7 @@ export default function ScheduleCreatorPage() {
                 onCreateTemplate={handleCreateTemplate}
                 onUpdateTemplate={handleUpdateTemplate}
                 onDeleteTemplate={handleDeleteTemplate}
-                employees={SUPERVISOR_EMPLOYEES}
+                employees={filteredEmployees}
                 isLoading={false}
               />
             )}
@@ -553,7 +542,7 @@ export default function ScheduleCreatorPage() {
             {activeTab === 'validation' && (
               <ValidationPanel
                 validation={validation}
-                employees={SUPERVISOR_EMPLOYEES}
+                employees={filteredEmployees}
                 onNavigateToEmployee={setSelectedEmployeeId}
                 onNavigateToShift={(shiftId) => {
                   const shift = shifts.find(s => s.id === shiftId)
@@ -582,12 +571,44 @@ export default function ScheduleCreatorPage() {
               compact={false}
             />
 
+            {/* Business-specific metrics */}
+            <Card>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Métricas de Negocio
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Ubicaciones activas:</span>
+                  <span className="font-medium">
+                    {selectedLocationId === 'all' ? MOCK_LOCATIONS.length : 1}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Total empleados:</span>
+                  <span className="font-medium">{filteredEmployees.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Presupuesto semanal:</span>
+                  <span className="font-medium">${totalBudget.toLocaleString('es-CO')}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Utilización:</span>
+                  <span className={`font-medium ${
+                    metrics.budgetUtilization > 100 ? 'text-red-600' :
+                    metrics.budgetUtilization > 85 ? 'text-yellow-600' : 'text-green-600'
+                  }`}>
+                    {metrics.budgetUtilization.toFixed(1)}%
+                  </span>
+                </div>
+              </div>
+            </Card>
+
             {activeTab === 'calendar' && (
               <EmployeesList
-                employees={SUPERVISOR_EMPLOYEES}
+                employees={filteredEmployees}
                 shifts={shifts}
-                restDays={restDays}
-                leaves={weeklyLeaves}
+                restDays={[]}
+                leaves={[]}
                 selectedEmployeeId={selectedEmployeeId}
                 onEmployeeSelect={setSelectedEmployeeId}
                 onCreateShift={(employeeId: string) => {
@@ -606,7 +627,7 @@ export default function ScheduleCreatorPage() {
           isOpen={shiftModalState.isOpen}
           onClose={handleCloseShiftModal}
           shift={shiftModalState.shift}
-          employees={SUPERVISOR_EMPLOYEES}
+          employees={filteredEmployees}
           templates={templates}
           onCreateShift={createShift}
           onUpdateShift={updateShift}

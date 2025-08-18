@@ -35,7 +35,8 @@ export const ROLE_PERMISSIONS = {
 } as const
 
 export const hasPermission = (userRole: UserRole, permission: string): boolean => {
-  return ROLE_PERMISSIONS[userRole].includes(permission as any)
+  const permissions = ROLE_PERMISSIONS[userRole] as readonly string[]
+  return permissions.includes(permission)
 }
 
 export const getRouteByRole = (role: UserRole): string => {

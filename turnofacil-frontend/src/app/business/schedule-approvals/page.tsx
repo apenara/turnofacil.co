@@ -543,7 +543,6 @@ export default function ScheduleApprovalsPage() {
                                 shift.type === 'overtime' ? 'warning' :
                                 shift.type === 'night' ? 'info' : 'error'
                               }
-                              size="sm"
                             >
                               {shift.type === 'regular' ? 'Regular' :
                                shift.type === 'overtime' ? 'Extra' :
@@ -609,7 +608,7 @@ export default function ScheduleApprovalsPage() {
               )}
               {modalMode === 'reject' && (
                 <Button 
-                  variant="error" 
+                  variant="danger" 
                   onClick={() => handleApproval('rejected')}
                   disabled={!approvalComments.trim()}
                 >

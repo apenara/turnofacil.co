@@ -25,6 +25,21 @@ const config: Config = {
           700: '#B45309',
           DEFAULT: '#F59E0B',
         },
+        // Colores semánticos unificados
+        semantic: {
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
+          info: '#3B82F6',
+        },
+        // Neutros unificados
+        neutral: {
+          'black': '#1F2937',
+          'dark-gray': '#4B5563',
+          'medium-gray': '#6B7280',
+          'light-gray': '#9CA3AF',
+          'off-white': '#F9FAFB',
+        }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

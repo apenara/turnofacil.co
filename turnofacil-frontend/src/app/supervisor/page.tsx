@@ -187,7 +187,7 @@ export default function SupervisorDashboard() {
         <Card>
           <h2 className="text-xl font-semibold mb-6">Acciones Rápidas</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Link href="/supervisor/scheduler">
+            <Link href="/supervisor/schedule-creator">
               <Card className="p-4 hover:shadow-lg transition-shadow cursor-pointer border border-primary/20 hover:border-primary/40">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
