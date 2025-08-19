@@ -173,7 +173,7 @@ export default function EmployeesPage() {
     if (modalMode === 'create') {
       const newEmployee: Employee = {
         ...formData as Employee,
-        id: Date.now().toString(),
+        
         startDate: new Date().toISOString().split('T')[0],
         documents: []
       }

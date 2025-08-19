@@ -246,7 +246,7 @@ export default function PositionsPage() {
       const hourlyRate = formData.baseSalary ? formData.baseSalary / 192 : 0 // 192 horas/mes promedio
       const newPosition: Position = {
         ...formData as Position,
-        id: Date.now().toString(),
+        
         hourlyRate: Math.round(hourlyRate),
         employeeCount: 0,
         createdDate: new Date().toISOString().split('T')[0]

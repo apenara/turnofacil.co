@@ -10,6 +10,7 @@ import {
   useRequestsForRole,
   TeamRequest,
   CreateRequestData,
+  UpdateRequestData,
   RequestFilters
 } from '@/shared/requests'
 
@@ -60,7 +61,7 @@ export default function BusinessRequests() {
     const total = filteredRequests.length
     const pending = filteredRequests.filter(r => r.status === 'pending').length
     const urgent = filteredRequests.filter(r => r.priority === 'urgent').length
-    const escalated = filteredRequests.filter(r => r.escalated).length
+    const escalated = filteredRequests.filter(r => r.approvalFlow.isEscalated).length
     
     return { total, pending, urgent, escalated }
   }, [filteredRequests])
@@ -77,18 +78,27 @@ export default function BusinessRequests() {
       await createRequest(data)
       setShowCreateModal(false)
       addNotification({
-        id: Date.now().toString(),
         type: 'success',
         title: 'Solicitud creada',
         message: 'La solicitud ha sido creada exitosamente.'
       })
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
         type: 'error',
         title: 'Error',
         message: 'No se pudo crear la solicitud. Intenta de nuevo.'
       })
+    }
+  }
+
+  // Handler unificado para el modal que acepta ambos tipos
+  const handleModalSave = async (data: CreateRequestData | UpdateRequestData) => {
+    if ('id' in data) {
+      // Es UpdateRequestData
+      await updateRequest(data as UpdateRequestData)
+    } else {
+      // Es CreateRequestData
+      await handleCreateRequest(data as CreateRequestData)
     }
   }
 
@@ -102,7 +112,6 @@ export default function BusinessRequests() {
       if (action === 'approve' && canPerformAction('approve_request', request)) {
         await approveRequest(request.id, 'Aprobado por Business Admin')
         addNotification({
-          id: Date.now().toString(),
           type: 'success',
           title: 'Solicitud aprobada',
           message: `La solicitud de ${request.employeeName} ha sido aprobada.`
@@ -110,7 +119,6 @@ export default function BusinessRequests() {
       } else if (action === 'reject' && canPerformAction('reject_request', request)) {
         await rejectRequest(request.id, 'Rechazada por Business Admin')
         addNotification({
-          id: Date.now().toString(),
           type: 'info',
           title: 'Solicitud rechazada',
           message: `La solicitud de ${request.employeeName} ha sido rechazada.`
@@ -118,7 +126,6 @@ export default function BusinessRequests() {
       }
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
         type: 'error',
         title: 'Error',
         message: 'No se pudo procesar la acción. Intenta de nuevo.'
@@ -131,7 +138,6 @@ export default function BusinessRequests() {
       if (action === 'approve') {
         await bulkApprove(requestIds, 'Aprobadas en lote por Business Admin')
         addNotification({
-          id: Date.now().toString(),
           type: 'success',
           title: 'Solicitudes aprobadas',
           message: `${requestIds.length} solicitudes han sido aprobadas en lote.`
@@ -139,7 +145,6 @@ export default function BusinessRequests() {
       } else {
         await bulkReject(requestIds, 'Rechazadas en lote por Business Admin')
         addNotification({
-          id: Date.now().toString(),
           type: 'info',
           title: 'Solicitudes rechazadas',
           message: `${requestIds.length} solicitudes han sido rechazadas en lote.`
@@ -147,7 +152,6 @@ export default function BusinessRequests() {
       }
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
         type: 'error',
         title: 'Error',
         message: 'No se pudo procesar la acción en lote.'
@@ -283,7 +287,6 @@ export default function BusinessRequests() {
             maxHeight="800px"
             onRequestSelect={handleRequestSelect}
             onRequestAction={handleRequestAction}
-            onBulkAction={handleBulkAction}
             customFilters={{
               location: selectedLocation === 'all' ? undefined : selectedLocation,
               sortBy: 'priority',
@@ -300,7 +303,7 @@ export default function BusinessRequests() {
         onClose={() => setShowCreateModal(false)}
         context={mockContext}
         mode="create"
-        onSave={handleCreateRequest}
+        onSave={handleModalSave}
       />
 
       {/* Modal para ver detalles */}

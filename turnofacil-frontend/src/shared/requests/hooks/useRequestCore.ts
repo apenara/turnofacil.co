@@ -444,7 +444,7 @@ export function useRequestCore({
     requests: state.requests,
     selectedRequest: state.selectedRequest,
     metrics: state.metrics,
-    analytics: state.analytics,
+    analytics: state.analytics || undefined,
     isLoading: state.isLoading,
     error: state.error,
     

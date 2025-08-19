@@ -150,7 +150,7 @@ export default function LocationsPage() {
     if (modalMode === 'create') {
       const newLocation: Location = {
         ...formData as Location,
-        id: Date.now().toString(),
+        
         employeeCount: 0,
         createdDate: new Date().toISOString().split('T')[0]
       }

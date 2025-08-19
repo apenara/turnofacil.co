@@ -59,38 +59,66 @@ interface ShiftItemProps {
 function ShiftItem({ shift, canEdit, onClick, isSelected }: ShiftItemProps) {
   const shiftColor = SHIFT_CONFIG.SHIFT_COLORS[shift.type]
   
+  const detailedTooltip = `
+    👤 ${shift.employeeName} - ${shift.position}
+    ⏰ ${shift.startTime} a ${shift.endTime}
+    💰 $${shift.cost?.toLocaleString('es-CO') || 'N/A'}
+    📋 ${shift.type === 'regular' ? 'Turno regular' : 
+         shift.type === 'overtime' ? 'Horas extra' :
+         shift.type === 'night' ? 'Turno nocturno' :
+         shift.type === 'holiday' ? 'Día festivo' : shift.type}
+    ${shift.notes ? `📝 ${shift.notes}` : ''}
+    💡 ${canEdit ? 'Doble clic para editar' : 'Solo lectura'}
+  `.trim()
+
   return (
     <div
       className={`
-        px-2 py-1 mb-1 rounded text-xs cursor-pointer transition-all duration-200
-        ${isSelected ? 'ring-2 ring-blue-400' : ''}
-        ${canEdit ? 'hover:shadow-md hover:scale-105' : 'cursor-default'}
-        text-white font-medium
+        px-2 py-1.5 mb-1 rounded-lg text-xs cursor-pointer transition-all duration-200
+        ${isSelected ? 'ring-2 ring-blue-400 shadow-lg' : 'shadow-sm'}
+        ${canEdit ? 'hover:shadow-md hover:scale-[1.02] transform' : 'cursor-default'}
+        text-white font-medium relative overflow-hidden
       `}
       style={{ 
         backgroundColor: shiftColor,
-        opacity: isSelected ? 1 : 0.9
+        opacity: isSelected ? 1 : 0.92
       }}
       onClick={() => onClick(shift)}
-      title={`${shift.employeeName} - ${shift.startTime} a ${shift.endTime}${shift.notes ? ` - ${shift.notes}` : ''}`}
+      title={detailedTooltip}
     >
-      <div className="flex justify-between items-center">
-        <span className="truncate">
+      <div className="flex justify-between items-center mb-0.5">
+        <span className="font-semibold truncate">
           {shift.startTime}-{shift.endTime}
         </span>
-        {shift.type !== 'regular' && (
-          <span className="ml-1 text-xs opacity-75">
-            {shift.type === 'overtime' ? 'EX' : 
-             shift.type === 'night' ? 'NOC' : 
-             shift.type === 'holiday' ? 'FES' : ''}
-          </span>
-        )}
+        <div className="flex items-center space-x-1">
+          {shift.type !== 'regular' && (
+            <div className="w-1.5 h-1.5 bg-white bg-opacity-80 rounded-full" 
+                 title="Turno especial" />
+          )}
+          {shift.notes && (
+            <div className="w-1.5 h-1.5 bg-yellow-300 rounded-full" 
+                 title="Tiene notas" />
+          )}
+        </div>
       </div>
+      
+      <div className="text-xs opacity-90 truncate">
+        {shift.employeeName}
+      </div>
+      
       {shift.notes && (
-        <div className="text-xs opacity-75 truncate mt-0.5">
-          {shift.notes}
+        <div className="text-xs opacity-75 truncate mt-0.5 italic">
+          "{shift.notes}"
         </div>
       )}
+      
+      {/* Barra de progreso visual para duración */}
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white bg-opacity-30">
+        <div 
+          className="h-full bg-white bg-opacity-60"
+          style={{ width: `${Math.min((shift.duration || 8) / 12 * 100, 100)}%` }}
+        />
+      </div>
     </div>
   )
 }
@@ -121,30 +149,49 @@ function CalendarCell({
     }
   }
 
+  const cellTooltip = `
+    👤 ${employee.name} - ${employee.position}
+    📅 ${new Date(date).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })}
+    ${!isAvailable ? '❌ No disponible' : '✅ Disponible'}
+    ${availability?.startTime && availability?.endTime ? `🕒 ${availability.startTime} - ${availability.endTime}` : ''}
+    ${dateShifts.length > 0 ? `📋 ${dateShifts.length} turno(s) programado(s)` : ''}
+    ${canEdit && isAvailable ? '💡 Clic para agregar turno' : ''}
+  `.trim()
+
   return (
     <div 
       className={`
-        min-h-[100px] border border-gray-200 p-1 
+        min-h-[120px] border border-gray-200 p-2 relative group
         ${isAvailable ? 'bg-white' : 'bg-gray-50'}
         ${canEdit && isAvailable ? 'hover:bg-blue-50 cursor-pointer' : ''}
         ${dayIndex === 0 || dayIndex === 6 ? 'bg-gray-25' : ''}
+        transition-colors duration-200
       `}
       onClick={handleCellClick}
+      title={cellTooltip}
     >
-      {!isAvailable && (
-        <div className="text-xs text-gray-400 italic">
-          No disponible
-        </div>
-      )}
+      {/* Header de disponibilidad */}
+      <div className="flex items-center justify-between mb-2">
+        {isAvailable && availability?.startTime && availability?.endTime ? (
+          <div className="text-xs text-gray-600 bg-green-100 px-1.5 py-0.5 rounded">
+            {availability.startTime}-{availability.endTime}
+          </div>
+        ) : !isAvailable ? (
+          <div className="text-xs text-gray-500 bg-gray-200 px-1.5 py-0.5 rounded italic">
+            No disponible
+          </div>
+        ) : null}
+        
+        {dateShifts.length > 0 && (
+          <div className="text-xs bg-blue-500 text-white px-1.5 py-0.5 rounded-full font-medium">
+            {dateShifts.length}
+          </div>
+        )}
+      </div>
       
-      {isAvailable && availability?.startTime && availability?.endTime && (
-        <div className="text-xs text-gray-500 mb-1">
-          {availability.startTime}-{availability.endTime}
-        </div>
-      )}
-      
-      <div className="space-y-1">
-        {dateShifts.map(shift => (
+      {/* Lista de turnos */}
+      <div className="space-y-1 overflow-hidden">
+        {dateShifts.slice(0, 2).map(shift => (
           <ShiftItem
             key={shift.id}
             shift={shift}
@@ -153,11 +200,23 @@ function CalendarCell({
             isSelected={false}
           />
         ))}
+        
+        {dateShifts.length > 2 && (
+          <div className="text-xs text-gray-500 bg-gray-100 rounded px-2 py-1 text-center cursor-pointer hover:bg-gray-200 transition-colors">
+            +{dateShifts.length - 2} más
+          </div>
+        )}
       </div>
       
-      {canEdit && isAvailable && dateShifts.length === 0 && (
-        <div className="text-xs text-gray-400 text-center mt-4 opacity-0 hover:opacity-100 transition-opacity">
-          + Agregar turno
+      {/* Botón de agregar turno */}
+      {canEdit && isAvailable && (
+        <div className={`
+          absolute bottom-1 right-1 w-6 h-6 bg-blue-500 text-white rounded-full 
+          flex items-center justify-center hover:bg-blue-600 transition-all duration-200
+          ${dateShifts.length === 0 ? 'opacity-30 group-hover:opacity-100' : 'opacity-70 hover:opacity-100'}
+          hover:scale-110 shadow-sm hover:shadow-md
+        `}>
+          <div className="text-xs font-bold">+</div>
         </div>
       )}
     </div>
@@ -326,29 +385,44 @@ export function UniversalScheduleCalendar({
     <div className={`schedule-calendar ${className}`}>
       {/* Header de información */}
       {!compactMode && (
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+        <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Horario Semanal - {context.week.startDate} al {context.week.endDate}
+              <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                📅 Horario Semanal
+                <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                  {context.week.startDate} al {context.week.endDate}
+                </span>
               </h3>
-              <p className="text-sm text-gray-600">
-                {displayEmployees.length} empleados • {visibleShifts.length} turnos
+              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-600">
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                  {displayEmployees.length} empleados
+                </div>
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
+                  {visibleShifts.length} turnos
+                </div>
+                <div className="flex items-center">
+                  <span className="w-2 h-2 bg-purple-500 rounded-full mr-1"></span>
+                  {visibleShifts.reduce((sum, shift) => sum + (shift.duration || 8), 0)}h totales
+                </div>
                 {context.user.role !== 'EMPLOYEE' && uiConfig.showBudgetInfo && (
-                  <span className="ml-2">
-                    • Presupuesto: {((visibleShifts.reduce((sum, shift) => sum + shift.cost, 0) / context.settings.budget.weeklyLimit) * 100).toFixed(1)}%
-                  </span>
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-1"></span>
+                    Presupuesto: {((visibleShifts.reduce((sum, shift) => sum + (shift.cost || 0), 0) / (context.settings?.budget?.weeklyLimit || 100000)) * 100).toFixed(1)}%
+                  </div>
                 )}
-              </p>
+              </div>
             </div>
             
             {canEdit && (
               <div className="flex gap-2">
-                <button className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600">
-                  Nuevo Turno
+                <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-sm hover:shadow-md">
+                  ➕ Nuevo Turno
                 </button>
-                <button className="px-3 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600">
-                  Validar Horario
+                <button className="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-sm hover:shadow-md">
+                  ✅ Validar Horario
                 </button>
               </div>
             )}
@@ -379,16 +453,29 @@ export function UniversalScheduleCalendar({
           {displayEmployees.map((employee, empIndex) => (
             <div key={employee.id} className={`grid grid-cols-8 ${compactMode ? 'min-h-[80px]' : 'min-h-[120px]'}`}>
               {/* Columna de empleado */}
-              <div className={`${compactMode ? 'p-2' : 'p-3'} border-r border-gray-300 bg-gray-50 flex flex-col justify-center`}>
-                <div className={`font-medium text-gray-900 ${compactMode ? 'text-xs' : 'text-sm'}`}>
+              <div className={`${compactMode ? 'p-2' : 'p-3'} border-r border-gray-300 bg-gray-50 flex flex-col justify-center group hover:bg-gray-100 transition-colors`}>
+                <div className={`font-semibold text-gray-900 ${compactMode ? 'text-xs' : 'text-sm'} truncate`} 
+                     title={employee.name}>
                   {employee.name}
                 </div>
-                <div className={`text-gray-600 ${compactMode ? 'text-xs' : 'text-sm'}`}>
+                <div className={`text-gray-600 ${compactMode ? 'text-xs' : 'text-sm'} truncate`} 
+                     title={employee.position}>
                   {employee.position}
                 </div>
                 {!compactMode && (
-                  <div className="text-xs text-gray-500 mt-1">
-                    {employeeManagement.calculateEmployeeWeeklyHours(employee.id)}h / {employee.maxWeeklyHours}h
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="text-xs text-gray-500">
+                      {employeeManagement.calculateEmployeeWeeklyHours(employee.id)}h / {employee.maxWeeklyHours}h
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        employee.status === 'active' ? 'bg-green-400' : 
+                        employee.status === 'inactive' ? 'bg-red-400' : 'bg-yellow-400'
+                      }`} title={`Estado: ${employee.status}`} />
+                      {employee.weeklyHours && employee.weeklyHours > employee.maxWeeklyHours && (
+                        <div className="w-2 h-2 bg-orange-400 rounded-full" title="Excede horas máximas" />
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

@@ -32,6 +32,13 @@ import {
   type TabType
 } from './components'
 
+// Importar componentes de vista simple
+import SimpleScheduleView from '@/components/calendar/SimpleScheduleView'
+import ScheduleViewSelector, { useScheduleView } from '@/components/calendar/ScheduleViewSelector'
+import ScheduleExporter from '@/components/calendar/ScheduleExporter'
+import { useSimpleSchedule } from '@/shared/scheduling/hooks/useSimpleSchedule'
+import { useCalendarResponsive } from '@/hooks/useResponsive'
+
 // Importar tipos y utilidades
 import { Employee, ShiftTemplate, ScheduleShift } from './types'
 import { getCurrentWeekString } from './utils'
@@ -221,6 +228,12 @@ export default function ScheduleCreatorPage() {
   // Estado de la UI
   const [activeTab, setActiveTab] = useState<TabType>('calendar')
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('')
+  
+  // Hook para manejo de vistas
+  const { viewMode, setViewMode } = useScheduleView('detailed')
+  
+  // Hook responsive
+  const responsive = useCalendarResponsive()
   const [shiftModalState, setShiftModalState] = useState<{
     isOpen: boolean
     shift?: ScheduleShift | null
@@ -324,6 +337,13 @@ export default function ScheduleCreatorPage() {
   const weekOptions = useMemo(() => {
     return generateWeekOptions(12)
   }, [generateWeekOptions])
+
+  // Hook para vista simple
+  const simpleScheduleData = useSimpleSchedule({
+    shifts,
+    employees: SUPERVISOR_EMPLOYEES,
+    weekDates: weekConfig.dates
+  })
 
   // Manejadores de eventos del modal de turnos
   const handleCreateShift = useCallback((employeeId: string, date: string, startTime?: string) => {
@@ -459,30 +479,85 @@ export default function ScheduleCreatorPage() {
           />
         </div>
 
+        {/* Selector de vista - Solo visible en pestaña calendario */}
+        {activeTab === 'calendar' && (
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <ScheduleViewSelector
+                currentView={viewMode}
+                onViewChange={setViewMode}
+                showLabels={true}
+              />
+              
+              {viewMode === 'simple' && (
+                <ScheduleExporter
+                  data={simpleScheduleData.exportData.toPrintData()}
+                  compactMode={true}
+                />
+              )}
+            </div>
+            
+            {viewMode === 'simple' && (
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  {simpleScheduleData.statistics.totalShifts} turnos
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  {simpleScheduleData.statistics.employeesWithShifts} empleados activos
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                  {simpleScheduleData.statistics.coverage.toFixed(1)}% cobertura
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Contenido principal por pestañas */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Contenido principal */}
           <div className="lg:col-span-3">
             {activeTab === 'calendar' && (
               <div className="space-y-6">
-                <SimpleWeeklyCalendar
-                  weekDates={weekConfig.dates}
-                  employees={SUPERVISOR_EMPLOYEES}
-                  shifts={shifts}
-                  restDays={restDays}
-                  leaves={weeklyLeaves}
-                  selectedShift={selectedShift}
-                  onShiftSelect={setSelectedShift}
-                  onCreateShift={handleCreateShift}
-                  onEditShift={handleEditShift}
-                  onDeleteShift={deleteShift}
-                />
+                {viewMode === 'detailed' ? (
+                  <SimpleWeeklyCalendar
+                    weekDates={weekConfig.dates}
+                    employees={SUPERVISOR_EMPLOYEES}
+                    shifts={shifts}
+                    restDays={restDays}
+                    leaves={weeklyLeaves}
+                    selectedShift={selectedShift}
+                    onShiftSelect={setSelectedShift}
+                    onCreateShift={handleCreateShift}
+                    onEditShift={handleEditShift}
+                    onDeleteShift={deleteShift}
+                  />
+                ) : (
+                  <SimpleScheduleView
+                    weekDates={weekConfig.dates}
+                    employees={simpleScheduleData.simpleEmployees}
+                    shifts={simpleScheduleData.simpleShifts}
+                    showLegend={responsive.showFullLegend}
+                    showPositions={responsive.showPositions}
+                    compactMode={responsive.shouldUseCompactMode}
+                    mobileMode={responsive.shouldUseMobileMode}
+                    maxEmployeesOnMobile={responsive.maxEmployeesOnMobile}
+                    onCellClick={(employeeId, date) => {
+                      // Cambiar a vista detallada y crear turno
+                      setViewMode('detailed')
+                      handleCreateShift(employeeId, date)
+                    }}
+                  />
+                )}
                 
                 <WeekSummary
                   summary={weekSummary}
                   weeklyBudget={RESTAURANT_CONFIG.weeklyBudget}
                   showComparison={false}
-                  showCharts={true}
+                  showCharts={viewMode === 'detailed'}
                 />
               </div>
             )}

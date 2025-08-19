@@ -9,7 +9,8 @@ import {
   createSimpleRequestContext,
   useRequestsForRole,
   TeamRequest,
-  CreateRequestData
+  CreateRequestData,
+  UpdateRequestData
 } from '@/shared/requests'
 
 // Mock data adaptada al formato del módulo compartido
@@ -52,18 +53,29 @@ export default function EmployeeRequests() {
       await createRequest(data)
       setShowNewRequestModal(false)
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'success',
         title: 'Solicitud enviada',
         message: 'Tu solicitud ha sido enviada y está pendiente de revisión.'
       })
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'error',
         title: 'Error',
         message: 'No se pudo enviar la solicitud. Intenta de nuevo.'
       })
+    }
+  }
+
+  // Handler unificado para el modal
+  const handleModalSave = async (data: CreateRequestData | UpdateRequestData) => {
+    if ('id' in data) {
+      // Es UpdateRequestData
+      await updateRequest(data as UpdateRequestData)
+    } else {
+      // Es CreateRequestData
+      await handleCreateRequest(data as CreateRequestData)
     }
   }
 
@@ -80,14 +92,14 @@ export default function EmployeeRequests() {
       try {
         await deleteRequest(request.id)
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'success',
           title: 'Solicitud eliminada',
           message: 'La solicitud ha sido eliminada correctamente.'
         })
       } catch (error) {
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'error',
           title: 'Error',
           message: 'No se pudo eliminar la solicitud.'
@@ -200,10 +212,7 @@ export default function EmployeeRequests() {
         context={mockContext}
         mode={selectedRequest ? "edit" : "create"}
         request={selectedRequest || undefined}
-        onSave={selectedRequest ? 
-          (data) => updateRequest(data as any) : 
-          handleCreateRequest
-        }
+        onSave={handleModalSave}
         onDelete={selectedRequest ? 
           () => deleteRequest(selectedRequest.id) : 
           undefined

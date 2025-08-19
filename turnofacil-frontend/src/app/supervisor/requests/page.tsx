@@ -10,6 +10,7 @@ import {
   useRequestsForRole,
   TeamRequest,
   CreateRequestData,
+  UpdateRequestData,
   RequestFilters
 } from '@/shared/requests'
 
@@ -64,18 +65,29 @@ export default function RequestsPage() {
       await createRequest(data)
       setShowCreateModal(false)
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'success',
         title: 'Solicitud creada',
         message: 'La solicitud ha sido creada exitosamente.'
       })
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'error',
         title: 'Error',
         message: 'No se pudo crear la solicitud. Intenta de nuevo.'
       })
+    }
+  }
+
+  // Handler unificado para el modal
+  const handleModalSave = async (data: CreateRequestData | UpdateRequestData) => {
+    if ('id' in data) {
+      // Es UpdateRequestData
+      await updateRequest(data as UpdateRequestData)
+    } else {
+      // Es CreateRequestData
+      await handleCreateRequest(data as CreateRequestData)
     }
   }
 
@@ -89,7 +101,7 @@ export default function RequestsPage() {
       if (action === 'approve' && canPerformAction('approve_request', request)) {
         await approveRequest(request.id)
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'success',
           title: 'Solicitud aprobada',
           message: `La solicitud de ${request.employeeName} ha sido aprobada.`
@@ -97,7 +109,7 @@ export default function RequestsPage() {
       } else if (action === 'reject' && canPerformAction('reject_request', request)) {
         await rejectRequest(request.id, 'Rechazada por supervisor')
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'info',
           title: 'Solicitud rechazada',
           message: `La solicitud de ${request.employeeName} ha sido rechazada.`
@@ -105,7 +117,7 @@ export default function RequestsPage() {
       } else if (action === 'escalate' && canPerformAction('escalate_request', request)) {
         await escalateRequest(request.id, 'Escalada por supervisor')
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'warning',
           title: 'Solicitud escalada',
           message: `La solicitud de ${request.employeeName} ha sido escalada al administrador.`
@@ -113,7 +125,7 @@ export default function RequestsPage() {
       }
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'error',
         title: 'Error',
         message: 'No se pudo procesar la acción. Intenta de nuevo.'
@@ -126,7 +138,7 @@ export default function RequestsPage() {
       if (action === 'approve') {
         await bulkApprove(requestIds)
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'success',
           title: 'Solicitudes aprobadas',
           message: `${requestIds.length} solicitudes han sido aprobadas en lote.`
@@ -134,7 +146,7 @@ export default function RequestsPage() {
       } else {
         await bulkReject(requestIds, 'Rechazadas en lote por supervisor')
         addNotification({
-          id: Date.now().toString(),
+          
           type: 'info',
           title: 'Solicitudes rechazadas',
           message: `${requestIds.length} solicitudes han sido rechazadas en lote.`
@@ -142,7 +154,7 @@ export default function RequestsPage() {
       }
     } catch (error) {
       addNotification({
-        id: Date.now().toString(),
+        
         type: 'error',
         title: 'Error',
         message: 'No se pudo procesar la acción en lote.'
@@ -277,7 +289,7 @@ export default function RequestsPage() {
         onClose={() => setShowCreateModal(false)}
         context={mockContext}
         mode="create"
-        onSave={handleCreateRequest}
+        onSave={handleModalSave}
       />
 
       {/* Modal para ver detalles */}

@@ -129,15 +129,15 @@ export function RequestModal({
     const typeConfig = formData.type ? REQUEST_TYPE_CONFIG[formData.type] : null
     if (typeConfig) {
       // Validar fecha requerida según configuración
-      if (typeConfig.requiredFields.includes('requestedDate') && !formData.requestedDate) {
+      if ((typeConfig.requiredFields as any).includes('requestedDate') && !formData.requestedDate) {
         newErrors.requestedDate = 'La fecha solicitada es obligatoria'
       }
 
-      if (typeConfig.requiredFields.includes('startDate') && !formData.startDate) {
+      if ((typeConfig.requiredFields as any).includes('startDate') && !formData.startDate) {
         newErrors.startDate = 'La fecha de inicio es obligatoria'
       }
 
-      if (typeConfig.requiredFields.includes('endDate') && !formData.endDate) {
+      if ((typeConfig.requiredFields as any).includes('endDate') && !formData.endDate) {
         newErrors.endDate = 'La fecha de fin es obligatoria'
       }
 
@@ -336,7 +336,7 @@ export function RequestModal({
           {/* Fechas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Fecha solicitada */}
-            {formData.type && REQUEST_TYPE_CONFIG[formData.type]?.requiredFields.includes('requestedDate') && (
+            {formData.type && (REQUEST_TYPE_CONFIG[formData.type]?.requiredFields as any)?.includes('requestedDate') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fecha solicitada *
@@ -355,7 +355,7 @@ export function RequestModal({
             )}
 
             {/* Fecha de inicio */}
-            {formData.type && REQUEST_TYPE_CONFIG[formData.type]?.requiredFields.includes('startDate') && (
+            {formData.type && (REQUEST_TYPE_CONFIG[formData.type]?.requiredFields as any)?.includes('startDate') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fecha de inicio *
@@ -374,7 +374,7 @@ export function RequestModal({
             )}
 
             {/* Fecha de fin */}
-            {formData.type && REQUEST_TYPE_CONFIG[formData.type]?.requiredFields.includes('endDate') && (
+            {formData.type && (REQUEST_TYPE_CONFIG[formData.type]?.requiredFields as any)?.includes('endDate') && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fecha de fin *

@@ -11,7 +11,7 @@ export type ShiftType = 'regular' | 'overtime' | 'night' | 'holiday'
 /**
  * Estados posibles de un turno
  */
-export type ShiftStatus = 'draft' | 'confirmed' | 'in_progress' | 'completed'
+export type ShiftStatus = 'draft' | 'confirmed' | 'published' | 'completed'
 
 /**
  * Plantilla de turno reutilizable
